@@ -194,7 +194,7 @@
         /* Modal */
         .modal-backdrop {
             backdrop-filter: blur(12px);
-            background: rgba(10, 14, 39, 0.7);
+            background: rgba(10, 14, 39, 0.85);
         }
         .light-theme .modal-content {
             background: #ffffff;
@@ -307,7 +307,6 @@ function App() {
     const isBasicUser = currentUser?.role === 'basic';
     const isLoggedIn = !!currentUser;
 
-    const [showLoginModal, setShowLoginModal] = useState(false);
     const [loginError, setLoginError] = useState('');
 
     // State Kategori Manual/Dinamis
@@ -392,7 +391,6 @@ function App() {
             const userSession = { username: u, role: 'superadmin' };
             setCurrentUser(userSession);
             localStorage.setItem('currentUserLBP', JSON.stringify(userSession));
-            setShowLoginModal(false);
             setLoginError('');
             return;
         }
@@ -402,7 +400,6 @@ function App() {
             const userSession = { username: foundUser.username, role: foundUser.role };
             setCurrentUser(userSession);
             localStorage.setItem('currentUserLBP', JSON.stringify(userSession));
-            setShowLoginModal(false);
             setLoginError('');
             return;
         }
@@ -415,6 +412,7 @@ function App() {
         localStorage.removeItem('currentUserLBP');
         setShowLogoutModal(false);
         setSettingSubView('main');
+        setActiveTab('home');
     };
 
     // FUNGSI KLIK KATEGORI DI BERANDA UNTUK BUKA HISTORY KEUANGAN
@@ -743,6 +741,46 @@ function App() {
         });
     }, [transactions, filterTransMonth, filterTransYear, filterType, filterCategory, filterMethod]);
 
+    // =========================================================
+    // JIKA BELUM LOGIN: TAMPILKAN HALAMAN KUNCI / FULL LOGIN
+    // =========================================================
+    if (!isLoggedIn) {
+        return (
+            <div className="max-w-md mx-auto h-screen flex flex-col justify-center items-center p-4 relative">
+                <div className="modal-content p-6 rounded-3xl w-full max-w-sm border border-slate-500/20 shadow-2xl space-y-4">
+                    <div className="text-center">
+                        <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-800 flex items-center justify-center text-white text-3xl shadow-lg mb-3">🔐</div>
+                        <h2 className="font-display font-bold text-2xl">LBP Accounting</h2>
+                        <p className="text-xs opacity-60 mt-1">Silakan Login Terlebih Dahulu</p>
+                    </div>
+
+                    {loginError && <p className="text-xs text-rose-500 bg-rose-500/10 p-3 rounded-xl text-center border border-rose-500/20 font-medium">⚠️ {loginError}</p>}
+
+                    <form onSubmit={handleLogin} className="space-y-3">
+                        <div>
+                            <label className="text-[10px] font-bold opacity-60 ml-1 uppercase tracking-wider">Username</label>
+                            <input name="username" type="text" placeholder="Masukkan Username..." className="w-full mt-1 text-sm p-3 rounded-xl input-premium" required />
+                        </div>
+                        <div>
+                            <label className="text-[10px] font-bold opacity-60 ml-1 uppercase tracking-wider">Password</label>
+                            <input name="password" type="password" placeholder="Masukkan Password..." className="w-full mt-1 text-sm p-3 rounded-xl input-premium" required />
+                        </div>
+                        <button type="submit" className="w-full btn-primary text-white p-3 rounded-xl text-xs font-bold shadow-lg mt-2">
+                            🚀 Masuk Ke Aplikasi
+                        </button>
+                    </form>
+
+                    <div className="pt-4 text-center border-t border-slate-500/10">
+                        <p className="text-[10px] font-mono opacity-50">Created By: <strong className="text-blue-400">Iyann</strong></p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // =========================================================
+    // JIKA SUDAH LOGIN: TAMPILKAN SELEBIHNYA (APLIKASI UTAMA)
+    // =========================================================
     return ( 
         <div className="max-w-md mx-auto h-screen flex flex-col relative"> 
 
@@ -770,15 +808,9 @@ function App() {
                     </span>
                     
                     {/* TAMPILAN NAMA AKUN YANG SEDANG LOGIN (TIDAK BISA DIKLIK) */}
-                    {isLoggedIn ? (
-                        <div className="text-[10px] bg-white/10 px-2.5 py-1 rounded-full border border-white/20 font-bold flex items-center gap-1 cursor-default">
-                            👤 {currentUser.username}
-                        </div>
-                    ) : (
-                        <button onClick={() => setShowLoginModal(true)} className="text-[10px] btn-gold px-2.5 py-1 rounded-full font-bold">
-                            🔐 Login
-                        </button>
-                    )}
+                    <div className="text-[10px] bg-white/10 px-2.5 py-1 rounded-full border border-white/20 font-bold flex items-center gap-1 cursor-default">
+                        👤 {currentUser.username}
+                    </div>
                 </div>
             </header>
 
@@ -1111,40 +1143,30 @@ function App() {
                         <div className="glass rounded-3xl p-5 text-center space-y-2">
                             <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-800 flex items-center justify-center text-white text-2xl shadow-lg">⚙️</div>
                             <h3 className="font-display font-bold text-xl">Pengaturan</h3>
-                            {isLoggedIn ? (
-                                <p className="text-xs opacity-60">Sesi Login: <strong className="text-blue-400">{currentUser?.username}</strong> ({currentUser?.role})</p>
-                            ) : (
-                                <p className="text-xs opacity-60">Anda Belum Login</p>
-                            )}
+                            <p className="text-xs opacity-60">Sesi Login: <strong className="text-blue-400">{currentUser?.username}</strong> ({currentUser?.role})</p>
                         </div>
 
-                        {isLoggedIn ? (
-                            <div className="space-y-2">
-                                {/* MENU SUPERADMIN */}
-                                {isSuperAdmin && (
-                                    <>
-                                        <button onClick={() => setSettingSubView('users')} className="w-full p-4 rounded-2xl glass hover:bg-slate-500/10 text-xs font-bold flex items-center justify-between transition">
-                                            <span className="flex items-center gap-3"><span className="text-lg">👤</span> Kelola Akun Login</span>
-                                            <span>→</span>
-                                        </button>
-                                        <button onClick={() => setSettingSubView('categories')} className="w-full p-4 rounded-2xl glass hover:bg-slate-500/10 text-xs font-bold flex items-center justify-between transition">
-                                            <span className="flex items-center gap-3"><span className="text-lg">📁</span> Ubah Kategori</span>
-                                            <span>→</span>
-                                        </button>
-                                    </>
-                                )}
+                        <div className="space-y-2">
+                            {/* MENU SUPERADMIN */}
+                            {isSuperAdmin && (
+                                <>
+                                    <button onClick={() => setSettingSubView('users')} className="w-full p-4 rounded-2xl glass hover:bg-slate-500/10 text-xs font-bold flex items-center justify-between transition">
+                                        <span className="flex items-center gap-3"><span className="text-lg">👤</span> Kelola Akun Login</span>
+                                        <span>→</span>
+                                    </button>
+                                    <button onClick={() => setSettingSubView('categories')} className="w-full p-4 rounded-2xl glass hover:bg-slate-500/10 text-xs font-bold flex items-center justify-between transition">
+                                        <span className="flex items-center gap-3"><span className="text-lg">📁</span> Ubah Kategori</span>
+                                        <span>→</span>
+                                    </button>
+                                </>
+                            )}
 
-                                {/* MENU UNTUK SEMUA USER (BASIC & SUPERADMIN) */}
-                                <button onClick={() => setShowLogoutModal(true)} className="w-full p-4 rounded-2xl glass hover:bg-rose-500/10 text-rose-500 text-xs font-bold flex items-center justify-between transition">
-                                    <span className="flex items-center gap-3"><span className="text-lg">🚪</span> Logout Akun</span>
-                                    <span>→</span>
-                                </button>
-                            </div>
-                        ) : (
-                            <button onClick={() => setShowLoginModal(true)} className="w-full p-4 btn-gold rounded-2xl text-xs font-bold shadow-lg flex items-center justify-center gap-2">
-                                🔐 Login Sekarang
+                            {/* MENU UNTUK SEMUA USER (BASIC & SUPERADMIN) */}
+                            <button onClick={() => setShowLogoutModal(true)} className="w-full p-4 rounded-2xl glass hover:bg-rose-500/10 text-rose-500 text-xs font-bold flex items-center justify-between transition">
+                                <span className="flex items-center gap-3"><span className="text-lg">🚪</span> Logout Akun</span>
+                                <span>→</span>
                             </button>
-                        )}
+                        </div>
 
                         {/* SUB-VIEW MODAL: KELOLA AKUN */}
                         {settingSubView === 'users' && isSuperAdmin && (
@@ -1255,37 +1277,7 @@ function App() {
                 </button> 
             </nav> 
 
-            {/* LOGIN MODAL */}
-            {showLoginModal && (
-                <div className="fixed inset-0 modal-backdrop z-[70] flex items-center justify-center p-4"> 
-                    <div className="modal-content p-6 rounded-3xl w-full max-w-sm"> 
-                        <div className="text-center mb-5">
-                            <div className="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-800 flex items-center justify-center text-white text-2xl shadow-lg mb-3">🔐</div>
-                            <h3 className="font-display font-bold text-xl">Login Aplikasi LBP</h3>
-                            <p className="text-[11px] opacity-60 mt-1">Masuk dengan Akun Anda</p>
-                        </div>
-                        
-                        {loginError && <p className="text-xs text-rose-500 bg-rose-500/10 p-3 rounded-xl mb-4 text-center border border-rose-500/20 font-medium">⚠️ {loginError}</p>}
-                        
-                        <form onSubmit={handleLogin} className="space-y-3">
-                            <div>
-                                <label className="text-[10px] font-bold opacity-60 ml-1 uppercase tracking-wider">Username</label>
-                                <input name="username" type="text" className="w-full mt-1.5 text-sm p-3 rounded-xl input-premium" required />
-                            </div>
-                            <div>
-                                <label className="text-[10px] font-bold opacity-60 ml-1 uppercase tracking-wider">Password</label>
-                                <input name="password" type="password" className="w-full mt-1.5 text-sm p-3 rounded-xl input-premium" required />
-                            </div>
-                            <div className="flex gap-2 pt-2">
-                                <button type="button" onClick={() => { setShowLoginModal(false); setLoginError(''); }} className="flex-1 border border-slate-500/20 p-3 rounded-xl text-xs font-bold transition">Batal</button> 
-                                <button type="submit" className="flex-1 btn-primary text-white p-3 rounded-xl text-xs font-bold shadow-lg">Login</button> 
-                            </div>
-                        </form>
-                    </div> 
-                </div> 
-            )}
-
-            {/* PAYMENT MODAL (PLACEHOLDER DIGANTI CONTOR IURAN) */}
+            {/* PAYMENT MODAL */}
             {showPayModal.isOpen && isSuperAdmin && (() => {
                 const m = showPayModal.member;
                 return (
