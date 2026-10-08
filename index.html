@@ -191,7 +191,6 @@
             outline: none;
         }
 
-        /* Input khusus pada Login Card yang Terang */
         .input-login-light {
             background: #f8fafc;
             border: 1.5px solid #cbd5e1;
@@ -257,7 +256,7 @@
             border-color: #3b82f6;
         }
 
-        /* Style Logo LBP SVG Asli */
+        /* Style Logo LBP SVG */
         .logo-lbp-svg .text-l {
             font-family: 'Arial Black', Impact, sans-serif;
             font-size: 300px;
@@ -286,9 +285,7 @@
 <script type="text/babel"> 
 const { useState, useEffect, useMemo } = React;
 
-// ==========================================
-// CONFIG SUPABASE (NANTI DIISI DATA NYUSUL)
-// ==========================================
+// CONFIG SUPABASE
 const SUPABASE_URL = "https://YOUR_SUPABASE_PROJECT_URL.supabase.co"; 
 const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY"; 
 
@@ -297,9 +294,9 @@ if (SUPABASE_URL && !SUPABASE_URL.includes("YOUR_SUPABASE_PROJECT_URL")) {
     supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
 
-// COMPONENT LOGO LBP SVG TRANSPARAN TANPA UBAH WARNA
+// COMPONENT LOGO LBP SVG REUSABLE
 const LBPLogo = ({ className = "w-full max-w-[200px]" }) => (
-    <div className={`mx-auto flex items-center justify-center ${className}`}>
+    <div className={`flex items-center justify-center ${className}`}>
         <svg viewBox="0 0 1000 450" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto logo-lbp-svg">
             <g transform="skewX(-18)">
                 <text className="text-l" x="180" y="360">L</text>
@@ -782,16 +779,12 @@ function App() {
         });
     }, [transactions, filterTransMonth, filterTransYear, filterType, filterCategory, filterMethod]);
 
-    // =========================================================
-    // JIKA BELUM LOGIN: TAMPILKAN CARD LOGIN BERWARNA PUTIH TERANG
-    // =========================================================
+    // HALAMAN LOGIN TERKUNCI
     if (!isLoggedIn) {
         return (
             <div className="max-w-md mx-auto h-screen flex flex-col justify-center items-center p-4 relative">
-                {/* CARD LOGIN DIGANTI MENJADI BG-WHITE DAN TEKS DARK */}
                 <div className="bg-white p-6 rounded-3xl w-full max-w-sm shadow-2xl space-y-4 text-slate-900 border border-slate-100">
                     <div className="text-center">
-                        {/* LOGO LBP DENGAN LOGO WARNA ASLI & BACKGROUND TRANSPARAN */}
                         <LBPLogo className="w-full max-w-[200px] mb-2" />
                         <h2 className="font-display font-bold text-2xl text-slate-800">LBP Accounting</h2>
                         <p className="text-xs text-slate-500 font-medium mt-1">Silakan Login Terlebih Dahulu</p>
@@ -821,22 +814,23 @@ function App() {
         );
     }
 
-    // =========================================================
-    // JIKA SUDAH LOGIN: TAMPILKAN SELEBIHNYA (APLIKASI UTAMA)
-    // =========================================================
+    // APLIKASI UTAMA
     return ( 
         <div className="max-w-md mx-auto h-screen flex flex-col relative"> 
 
-            {/* HEADER */}
-            <header className="hero-gradient text-white px-3 py-3 shadow-2xl flex-none flex justify-between items-center sticky top-0 z-50 pt-safe"> 
-                <div className="marquee-container">
-                    <h1 className="marquee-content text-[11px] font-bold tracking-[0.2em] uppercase font-display">
-                        ✦ LBP (LAKSANA BUNGA PASIR) ✦
-                    </h1> 
+            {/* HEADER UTAMA DENGAN LOGO DI ATAS KIRI */}
+            <header className="hero-gradient text-white px-3 py-2.5 shadow-2xl flex-none flex justify-between items-center sticky top-0 z-50 pt-safe"> 
+                {/* 1. LOGO DITERAPKAN DI HEADER ATAS KIRI */}
+                <div className="flex items-center gap-2 flex-1 min-w-0">
+                    <LBPLogo className="w-10 h-auto flex-none" />
+                    <div className="marquee-container">
+                        <h1 className="marquee-content text-[11px] font-bold tracking-[0.2em] uppercase font-display">
+                            ✦ LBP (LAKSANA BUNGA PASIR) ✦
+                        </h1> 
+                    </div>
                 </div>
 
                 <div className="flex items-center gap-1.5 flex-none">
-                    {/* NIGHT MODE TOGGLE BUTTON */}
                     <button 
                         onClick={() => setIsNightMode(!isNightMode)} 
                         className="p-1.5 bg-white/10 hover:bg-white/20 rounded-full text-xs border border-white/20 transition"
@@ -850,7 +844,6 @@ function App() {
                         <span className="text-white/90">{MONTH_NAMES[activeMonth].substring(0,3)} {activeYear}</span>
                     </span>
                     
-                    {/* TAMPILAN NAMA AKUN YANG SEDANG LOGIN (TIDAK BISA DIKLIK) */}
                     <div className="text-[10px] bg-white/10 px-2.5 py-1 rounded-full border border-white/20 font-bold flex items-center gap-1 cursor-default">
                         👤 {currentUser.username}
                     </div>
@@ -957,7 +950,7 @@ function App() {
                             </div> 
                         </div> 
                         
-                        {/* Categories (BISA DIKLIK UNTUK LIHAT HISTORY PENUH KATEGORI) */}
+                        {/* Categories */}
                         <div>
                             <div className="grid grid-cols-1 gap-2"> 
                                 {categories.map((cat) => ( 
@@ -1180,11 +1173,12 @@ function App() {
                     </div> 
                 )} 
 
-                {/* TAB SETTING DI HALAMAN UTAMA */}
+                {/* TAB SETTING DI HALAMAN UTAMA DENGAN LOGO LBP */}
                 {activeTab === 'setting' && (
                     <div className="flex flex-col space-y-4">
                         <div className="glass rounded-3xl p-5 text-center space-y-2">
-                            <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-800 flex items-center justify-center text-white text-2xl shadow-lg">⚙️</div>
+                            {/* 2. LOGO DITERAPKAN DI PENGATURAN MENGGANTIKAN GEAR */}
+                            <LBPLogo className="w-16 h-auto mx-auto mb-1 drop-shadow-md" />
                             <h3 className="font-display font-bold text-xl">Pengaturan</h3>
                             <p className="text-xs opacity-60">Sesi Login: <strong className="text-blue-400">{currentUser?.username}</strong> ({currentUser?.role})</p>
                         </div>
