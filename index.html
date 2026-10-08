@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="id">
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
+    <title>LBP - Laksana Bunga Pasir</title> 
+    <script src="https://cdn.tailwindcss.com"></script> 
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script> 
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script> 
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <!-- SUPABASE JS CLIENT SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --navy-900: #0a0e27;
+            --navy-800: #111a3a;
+            --navy-700: #1a2550;
+            --gold-400: #fbbf24;
+            --gold-500: #f59e0b;
+            --emerald-glow: #10b981;
+        }
+        
+        * { font-family: 'Plus Jakarta Sans', sans-serif; }
+        h1, h2, h3, .font-display { font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.02em; }
+        
+        /* Tema Terang / Normal */
+        body.light-theme {
+            background: 
+                radial-gradient(circle at 20% 10%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
+                linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%);
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        /* Tema Malam / Night Mode */
+        body.dark-theme {
+            background: 
+                radial-gradient(circle at 20% 10%, rgba(30, 58, 138, 0.25) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(88, 28, 135, 0.25) 0%, transparent 50%),
+                linear-gradient(180deg, #090d16 0%, #0f172a 100%);
+            color: #f1f5f9;
+            min-height: 100vh;
+        }
+
+        /* Marquee */
+        .marquee-container {
+            display: flex;
+            overflow: hidden;
+            white-space: nowrap;
+            flex: 1;
+            min-width: 0;
+            margin-right: 8px;
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        }
+        .marquee-content {
+            animation: marquee 20s linear infinite, shimmer 3s linear infinite;
+            padding-left: 100%;
+            display: inline-block;
+            background: linear-gradient(90deg, #fbbf24, #ffffff, #fbbf24);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        @keyframes marquee {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
+        }
+        @keyframes shimmer {
+            to { background-position: 200% center; }
+        }
+
+        /* Glassmorphism Dynamic */
+        .light-theme .glass {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
+        }
+        .dark-theme .glass {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        
+        .glass-dark {
+            background: rgba(17, 26, 58, 0.85);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Premium Card Dynamic */
+        .light-theme .premium-card {
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+        }
+        .dark-theme .premium-card {
+            background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Hero Gradient */
+        .hero-gradient {
+            background: 
+                radial-gradient(circle at 0% 0%, rgba(251, 191, 36, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.2) 0%, transparent 50%),
+                linear-gradient(135deg, #0a0e27 0%, #1a2550 50%, #111a3a 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(30, 64, 175, 0.4);
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #451a03;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-emerald {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Progress bar */
+        .progress-track {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, #10b981 0%, #34d399 50%, #fbbf24 100%);
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.6);
+        }
+
+        /* Bottom nav */
+        .light-theme .bottom-nav {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(24px);
+            border-top: 1px solid rgba(15, 23, 42, 0.06);
+        }
+        .dark-theme .bottom-nav {
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(24px);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 32px;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+            border-radius: 0 0 4px 4px;
+        }
+
+        /* Inputs */
+        .light-theme .input-premium {
+            background: #ffffff;
+            border: 1.5px solid #e2e8f0;
+            color: #0f172a;
+        }
+        .dark-theme .input-premium {
+            background: #0f172a;
+            border: 1.5px solid #334155;
+            color: #f8fafc;
+        }
+        .input-premium:focus {
+            border-color: #3b82f6;
+            outline: none;
+        }
+
+        /* Modal */
+        .modal-backdrop {
+            backdrop-filter: blur(12px);
+            background: rgba(10, 14, 39, 0.7);
+        }
+        .light-theme .modal-content {
+            background: #ffffff;
+            color: #0f172a;
+        }
+        .dark-theme .modal-content {
+            background: #1e293b;
+            color: #f8fafc;
+        }
+
+        /* Citizen & Transaction row */
+        .light-theme .citizen-row, .light-theme .trans-row {
+            background: #ffffff;
+            border: 1px solid rgba(15, 23, 42, 0.05);
+        }
+        .dark-theme .citizen-row, .dark-theme .trans-row {
+            background: #1e293b;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .pulse-dot { position: relative; }
+        .pulse-dot::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 50%;
+            background: #10b981;
+            opacity: 0.6;
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 0; transform: scale(2); }
+        }
+
+        .light-theme .category-card {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #e2e8f0;
+        }
+        .dark-theme .category-card {
+            background: rgba(30, 41, 59, 0.9);
+            border: 1px solid #334155;
+        }
+
+        .num-display {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+        }
+
+        .pb-safe { padding-bottom: max(0.5rem, env(safe-area-inset-bottom)); }
+        .pt-safe { padding-top: max(0.5rem, env(safe-area-inset-top)); }
+    </style>
+</head>
+<body class="dark-theme antialiased select-none"> 
+    <div id="root"></div>
+
+<script type="text/babel"> 
+const { useState, useEffect, useMemo } = React;
+
+// ==========================================
+// CONFIG SUPABASE (NANTI DIISI DATA NYUSUL)
+// ==========================================
+const SUPABASE_URL = "https://YOUR_SUPABASE_PROJECT_URL.supabase.co"; 
+const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY"; 
+
+let supabase = null;
+if (SUPABASE_URL && !SUPABASE_URL.includes("YOUR_SUPABASE_PROJECT_URL")) {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+
+// DEFAULT SUPERADMIN UTAMA
+const DEFAULT_SUPERADMIN = { username: 'superadmin', password: 'admin123', role: 'superadmin' };
+
+const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwBw1oqQylhRH-YEL5zdlvLizlw_H_YeehjoJwxhmmGf-eW12Hf7RewrNxqMqaEh3w92w/exec";
+
+const MONTH_NAMES = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+const AVAILABLE_YEARS = [2024, 2025, 2026, 2027, 2028, 2029, 2030];
+
+function App() { 
+    // State Night Mode Default True
+    const [isNightMode, setIsNightMode] = useState(() => {
+        const saved = localStorage.getItem('nightModeLBP');
+        return saved !== null ? saved === 'true' : true;
+    });
+
+    useEffect(() => {
+        if (isNightMode) {
+            document.body.classList.remove('light-theme');
+            document.body.classList.add('dark-theme');
+        } else {
+            document.body.classList.remove('dark-theme');
+            document.body.classList.add('light-theme');
+        }
+        localStorage.setItem('nightModeLBP', isNightMode);
+    }, [isNightMode]);
+
+    // State Akun Sesi
+    const [currentUser, setCurrentUser] = useState(() => {
+        const saved = localStorage.getItem('currentUserLBP');
+        return saved ? JSON.parse(saved) : null;
+    });
+
+    const isSuperAdmin = currentUser?.role === 'superadmin';
+    const isBasicUser = currentUser?.role === 'basic';
+    const isLoggedIn = !!currentUser;
+
+    const [showLoginModal, setShowLoginModal] = useState(false);
+    const [loginError, setLoginError] = useState('');
+
+    // State Kategori Manual/Dinamis
+    const [categories, setCategories] = useState(() => {
+        const saved = localStorage.getItem('categoriesLBP');
+        return saved ? JSON.parse(saved) : [
+            { id: 'pemasukan_umum', name: 'Pemasukan Umum' },
+            { id: 'iuran_anggota', name: 'Iuran Anggota' },
+            { id: 'pengeluaran_operasional', name: 'Pengeluaran Operasional' }
+        ];
+    });
+
+    // State User buatan Superadmin
+    const [appUsers, setAppUsers] = useState(() => {
+        const saved = localStorage.getItem('appUsersLBP');
+        return saved ? JSON.parse(saved) : [];
+    });
+
+    // Modal Sub-setting
+    const [showSettingsModal, setShowSettingsModal] = useState(false);
+    const [showManageUsersModal, setShowManageUsersModal] = useState(false);
+    const [showManageCategoriesModal, setShowManageCategoriesModal] = useState(false);
+
+    const [activeTab, setActiveTab] = useState('home'); 
+    const [activeMonth, setActiveMonth] = useState(new Date().getMonth()); 
+    const [activeYear, setActiveYear] = useState(new Date().getFullYear()); 
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filterStatus, setFilterStatus] = useState('all');
+    
+    const [filterTransMonth, setFilterTransMonth] = useState(new Date().getMonth().toString());
+    const [filterTransYear, setFilterTransYear] = useState(new Date().getFullYear().toString());
+    const [filterType, setFilterType] = useState('all');
+    const [filterCategory, setFilterCategory] = useState('all');
+    const [filterMethod, setFilterMethod] = useState('all');
+    
+    const [members, setMembers] = useState(() => {
+        const saved = localStorage.getItem('membersLBP');
+        return saved ? JSON.parse(saved) : [];
+    }); 
+    const [transactions, setTransactions] = useState(() => {
+        const saved = localStorage.getItem('transactionsLBP');
+        return saved ? JSON.parse(saved) : [];
+    }); 
+    const [isSyncing, setIsSyncing] = useState(false);
+    
+    const [showPayModal, setShowPayModal] = useState({ isOpen: false, member: null }); 
+
+    const [showTransModal, setShowTransModal] = useState(false); 
+    const [editTransData, setEditTransData] = useState(null); 
+    
+    // State Modal Universal/Kustom
+    const [customModal, setCustomModal] = useState({ 
+        isOpen: false, 
+        title: '', 
+        message: '', 
+        icon: '⚠️',
+        type: 'confirm',
+        defaultValue: '',
+        onConfirm: null 
+    });
+
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+    const localToday = useMemo(() => {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+    }, []);
+
+    useEffect(() => { localStorage.setItem('appUsersLBP', JSON.stringify(appUsers)); }, [appUsers]);
+    useEffect(() => { localStorage.setItem('categoriesLBP', JSON.stringify(categories)); }, [categories]);
+    useEffect(() => { localStorage.setItem('membersLBP', JSON.stringify(members)); }, [members]);
+    useEffect(() => { localStorage.setItem('transactionsLBP', JSON.stringify(transactions)); }, [transactions]);
+
+    // LOGIN HANDLER
+    const handleLogin = (e) => {
+        e.preventDefault();
+        const u = e.target.username.value.trim();
+        const p = e.target.password.value.trim();
+        
+        if (u === DEFAULT_SUPERADMIN.username && p === DEFAULT_SUPERADMIN.password) {
+            const userSession = { username: u, role: 'superadmin' };
+            setCurrentUser(userSession);
+            localStorage.setItem('currentUserLBP', JSON.stringify(userSession));
+            setShowLoginModal(false);
+            setLoginError('');
+            return;
+        }
+
+        const foundUser = appUsers.find(user => user.username === u && user.password === p);
+        if (foundUser) {
+            const userSession = { username: foundUser.username, role: foundUser.role };
+            setCurrentUser(userSession);
+            localStorage.setItem('currentUserLBP', JSON.stringify(userSession));
+            setShowLoginModal(false);
+            setLoginError('');
+            return;
+        }
+
+        setLoginError('Username atau password salah!');
+    };
+
+    const handleLogoutConfirm = () => {
+        setCurrentUser(null);
+        localStorage.removeItem('currentUserLBP');
+        setShowLogoutModal(false);
+        setShowSettingsModal(false);
+    };
+
+    // MANAGEMENT USER LOGIN
+    const handleAddUser = (e) => {
+        e.preventDefault();
+        const u = e.target.new_username.value.trim();
+        const p = e.target.new_password.value.trim();
+        const role = e.target.new_role.value;
+
+        if (!u || !p) return;
+
+        if (u === DEFAULT_SUPERADMIN.username || appUsers.some(usr => usr.username === u)) {
+            setCustomModal({
+                isOpen: true,
+                title: 'Gagal Tambah Akun',
+                message: 'Username tersebut sudah digunakan oleh akun lain.',
+                icon: '❌',
+                type: 'alert'
+            });
+            return;
+        }
+
+        const newUser = { id: Date.now(), username: u, password: p, role: role };
+        setAppUsers([...appUsers, newUser]);
+        e.target.reset();
+    };
+
+    const handleDeleteUser = (id) => {
+        setCustomModal({
+            isOpen: true,
+            title: 'Hapus User',
+            message: 'Yakin ingin menghapus akun login ini?',
+            icon: '⚠️',
+            type: 'confirm',
+            onConfirm: () => setAppUsers(appUsers.filter(usr => usr.id !== id))
+        });
+    };
+
+    // MANAGEMENT KATEGORI
+    const handleAddCategory = (e) => {
+        e.preventDefault();
+        const catName = e.target.cat_name.value.trim();
+        if (!catName) return;
+        const newCat = { id: 'cat_' + Date.now(), name: catName };
+        setCategories([...categories, newCat]);
+        e.target.reset();
+    };
+
+    const handleDeleteCategory = (catId) => {
+        setCustomModal({
+            isOpen: true,
+            title: 'Hapus Kategori',
+            message: 'Hapus kategori ini dari daftar?',
+            icon: '⚠️',
+            type: 'confirm',
+            onConfirm: () => setCategories(categories.filter(c => c.id !== catId))
+        });
+    };
+
+    const formatRupiah = (val) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(val);
+
+    const financialData = useMemo(() => { 
+        let cash = 0, qris = 0, income = 0, expense = 0; 
+        let allTimeIncome = 0, allTimeExpense = 0;
+        let catBalances = categories.reduce((acc, c) => ({ ...acc, [c.id]: 0 }), {});
+
+        transactions.forEach(t => { 
+            const nom = parseInt(t.nominal) || 0; 
+            const d = new Date(t.date); 
+            const isCurrentMonth = d.getMonth() === activeMonth && d.getFullYear() === activeYear;
+
+            if (t.type === 'masuk') { 
+                allTimeIncome += nom;
+                if (t.method === 'tunai') cash += nom; else qris += nom; 
+                if (isCurrentMonth) income += nom; 
+                if (t.category && catBalances[t.category] !== undefined) { 
+                    catBalances[t.category] += nom; 
+                } 
+            } else { 
+                allTimeExpense += nom;
+                if (t.method === 'tunai') cash -= nom; else qris -= nom; 
+                if (isCurrentMonth) expense += nom; 
+                if (t.category && catBalances[t.category] !== undefined) { 
+                    catBalances[t.category] -= nom; 
+                } 
+            } 
+        }); 
+        return { cash, qris, income, expense, allTimeIncome, allTimeExpense, catBalances, total: cash + qris }; 
+    }, [transactions, activeMonth, activeYear, categories]);
+
+    const getDuesTotalPaid = (mId) => {
+        return transactions.filter(t => {
+            if (!t.isDues || t.memberId !== mId) return false;
+            if (t.duesMonth !== undefined && t.duesYear !== undefined) {
+                return t.duesMonth === activeMonth && t.duesYear === activeYear;
+            }
+            return new Date(t.date).getMonth() === activeMonth && new Date(t.date).getFullYear() === activeYear;
+        }).reduce((sum, t) => sum + (parseInt(t.nominal) || 0), 0);
+    };
+
+    const isPaid = (mId) => getDuesTotalPaid(mId) > 0;
+
+    const duesProgress = useMemo(() => {
+        const total = members.length;
+        const paid = members.filter(m => isPaid(m.id)).length;
+        const percent = total > 0 ? Math.round((paid / total) * 100) : 0;
+        return { total, paid, percent };
+    }, [members, transactions, activeMonth, activeYear]);
+
+    // SUBMIT BAYAR ANGGOTA
+    const handlePayDuesSubmit = (e) => { 
+        e.preventDefault();
+        if (!isSuperAdmin) return;
+        
+        const m = showPayModal.member; 
+        const nominalVal = parseInt(e.target.pay_nominal.value) || 0;
+        const ketVal = e.target.pay_ket.value.trim() || `Iuran ${m.name}`;
+        const methodVal = e.target.pay_method.value;
+        const catVal = e.target.pay_category.value;
+        
+        if (nominalVal <= 0) {
+            setCustomModal({
+                isOpen: true,
+                title: 'Nominal Tidak Valid',
+                message: 'Silakan masukkan nominal pembayaran lebih dari 0.',
+                icon: '⚠️',
+                type: 'alert'
+            });
+            return;
+        }
+
+        const newId = Date.now();
+        const newT = { 
+            id: newId, 
+            ket: `${m.name} - ${ketVal}`, 
+            nominal: nominalVal, 
+            category: catVal, 
+            method: methodVal, 
+            type: 'masuk', 
+            date: new Date().toISOString(), 
+            memberId: m.id, 
+            isDues: true,
+            duesMonth: activeMonth, 
+            duesYear: activeYear,
+            createdBy: currentUser?.username
+        }; 
+        
+        setTransactions([newT, ...transactions]);
+        setShowPayModal({ isOpen: false, member: null }); 
+    };
+
+    // SIMPAN TRANSAKSI BARU / EDIT
+    const handleSaveTransaction = (e) => { 
+        e.preventDefault(); 
+        if (!isSuperAdmin) return;
+        const form = e.target; 
+        const [y, m, d] = form.date.value.split('-');
+        
+        const now = new Date();
+        const transactionDate = new Date(y, m - 1, d, now.getHours(), now.getMinutes(), now.getSeconds());
+
+        const newTData = { 
+            nominal: parseInt(form.nom.value),
+            ket: form.ket.value, 
+            method: form.method.value, 
+            type: form.type.value, 
+            category: form.cat.value, 
+            date: transactionDate.toISOString(), 
+        }; 
+
+        if (editTransData) {
+            setTransactions(transactions.map(t => t.id === editTransData.id ? { ...t, ...newTData } : t));
+        } else {
+            const newId = Date.now();
+            setTransactions([{ id: newId, isDues: false, createdBy: currentUser?.username, ...newTData }, ...transactions]);
+        }
+        
+        setShowTransModal(false); 
+        setEditTransData(null);
+    };
+
+    const handleEditMember = (member) => {
+        if (!isSuperAdmin) return;
+        setCustomModal({
+            isOpen: true,
+            title: 'Edit Nama Anggota',
+            message: 'Masukkan nama anggota baru:',
+            icon: '✎',
+            type: 'prompt',
+            defaultValue: member.name,
+            onConfirm: (val) => {
+                if (val && val.trim()) {
+                    setMembers(members.map(m => m.id === member.id ? { ...m, name: val.trim() } : m));
+                }
+            }
+        });
+    };
+
+    const handleDeleteMember = (id) => {
+        if (!isSuperAdmin) return;
+        setCustomModal({
+            isOpen: true,
+            title: 'Hapus Anggota',
+            message: 'Apakah Anda yakin ingin menghapus Anggota ini? Data tidak dapat dikembalikan.',
+            icon: '⚠️',
+            type: 'confirm',
+            onConfirm: () => setMembers(members.filter(m => m.id !== id))
+        });
+    };
+
+    const handleDeleteTransaction = (id) => {
+        if (!isSuperAdmin) return;
+        setCustomModal({
+            isOpen: true,
+            title: 'Hapus Transaksi',
+            message: 'Apakah Anda yakin ingin menghapus data transaksi ini?',
+            icon: '⚠️',
+            type: 'confirm',
+            onConfirm: () => setTransactions(transactions.filter(t => t.id !== id))
+        });
+    };
+
+    const handleAddMember = () => {
+        if (!isSuperAdmin) return;
+        setCustomModal({
+            isOpen: true,
+            title: 'Tambah Anggota Baru',
+            message: 'Masukkan Nama Anggota baru:',
+            icon: '➕',
+            type: 'prompt',
+            defaultValue: '',
+            onConfirm: (val) => {
+                if (val && val.trim()) {
+                    const newId = Date.now();
+                    setMembers([...members, {
+                        id: newId,
+                        name: val.trim(),
+                        createdBy: currentUser?.username
+                    }]);
+                }
+            }
+        });
+    };
+
+    const handleSyncToSheets = () => {
+        if (!isSuperAdmin) return;
+        setCustomModal({
+            isOpen: true,
+            title: 'Sinkronkan Data',
+            message: 'Kirim seluruh data riwayat transaksi ini ke Google Sheets?',
+            icon: '☁️',
+            type: 'confirm',
+            onConfirm: () => {
+                setIsSyncing(true);
+                const dataToSend = transactions.map(t => {
+                    const catObj = categories.find(c => c.id === t.category);
+                    return {
+                        date: t.date.split('T')[0],
+                        ket: t.ket,
+                        type: t.type === 'masuk' ? 'Pemasukan' : 'Pengeluaran',
+                        cat: catObj ? catObj.name : 'Lainnya',
+                        method: t.method === 'qris' ? 'QRIS / Transfer' : 'Tunai',
+                        nom: t.nominal
+                    };
+                });
+
+                fetch(GOOGLE_SHEET_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify(dataToSend)
+                })
+                .then(() => {
+                    setIsSyncing(false);
+                    setCustomModal({
+                        isOpen: true,
+                        title: 'Berhasil Sinkron',
+                        message: 'Data berhasil dikirim ke Google Sheets!',
+                        icon: '✅',
+                        type: 'alert'
+                    });
+                })
+                .catch(err => {
+                    setIsSyncing(false);
+                    setCustomModal({
+                        isOpen: true,
+                        title: 'Gagal Sinkron',
+                        message: 'Terjadi kesalahan: ' + err.message,
+                        icon: '❌',
+                        type: 'alert'
+                    });
+                });
+            }
+        });
+    };
+
+    const filteredMembers = useMemo(() => {
+        return members.filter(m => {
+            const matchesSearch = m.name.toLowerCase().includes(searchTerm.toLowerCase());
+            let matchesStatus = true;
+            const paidAmount = getDuesTotalPaid(m.id);
+            if (filterStatus === 'lunas') {
+                matchesStatus = paidAmount > 0;
+            } else if (filterStatus === 'belum') {
+                matchesStatus = paidAmount === 0;
+            }
+            return matchesSearch && matchesStatus;
+        });
+    }, [members, searchTerm, filterStatus, transactions, activeMonth, activeYear]);
+
+    const filteredTransactions = useMemo(() => {
+        return transactions.filter(t => {
+            const tDate = new Date(t.date);
+            const matchMonth = filterTransMonth === 'all' || tDate.getMonth() === parseInt(filterTransMonth);
+            const matchYear = filterTransYear === 'all' || tDate.getFullYear() === parseInt(filterTransYear);
+            const matchType = filterType === 'all' || t.type === filterType;
+            const matchMethod = filterMethod === 'all' || t.method === filterMethod;
+            const matchCategory = filterCategory === 'all' || t.category === filterCategory;
+            return matchMonth && matchYear && matchType && matchMethod && matchCategory;
+        });
+    }, [transactions, filterTransMonth, filterTransYear, filterType, filterCategory, filterMethod]);
+
+    return ( 
+        <div className="max-w-md mx-auto h-screen flex flex-col relative"> 
+
+            {/* HEADER */}
+            <header className="hero-gradient text-white px-3 py-3 shadow-2xl flex-none flex justify-between items-center sticky top-0 z-50 pt-safe"> 
+                <div className="marquee-container">
+                    <h1 className="marquee-content text-[11px] font-bold tracking-[0.2em] uppercase font-display">
+                        ✦ LBP (LAKSANA BUNGA PASIR) ✦
+                    </h1> 
+                </div>
+
+                <div className="flex items-center gap-1.5 flex-none">
+                    {/* NIGHT MODE TOGGLE BUTTON */}
+                    <button 
+                        onClick={() => setIsNightMode(!isNightMode)} 
+                        className="p-1.5 bg-white/10 hover:bg-white/20 rounded-full text-xs border border-white/20 transition"
+                        title={isNightMode ? "Mode Terang" : "Mode Malam"}
+                    >
+                        {isNightMode ? '☀️' : '🌙'}
+                    </button>
+
+                    <span className="text-[10px] glass-dark px-2 py-1 rounded-full font-mono flex items-center border border-white/10">
+                        <span className="inline-block w-1.5 h-1.5 bg-emerald-400 rounded-full mr-1 pulse-dot relative"></span>
+                        <span className="text-white/90">{MONTH_NAMES[activeMonth].substring(0,3)} {activeYear}</span>
+                    </span>
+                    
+                    {isLoggedIn ? (
+                        <button onClick={() => setShowSettingsModal(true)} className="text-[10px] bg-gradient-to-br from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 px-3 py-1.5 rounded-full shadow-lg font-bold border border-blue-400/30 transition-all flex items-center gap-1">
+                            ⚙️ Setting
+                        </button>
+                    ) : (
+                        <button onClick={() => setShowLoginModal(true)} className="text-[10px] btn-gold px-2.5 py-1 rounded-full font-bold">
+                            🔐 Login
+                        </button>
+                    )}
+                </div>
+            </header>
+
+            <main className="flex-1 p-3 pb-20 overflow-y-auto"> 
+                {activeTab === 'home' && ( 
+                    <div className="flex flex-col space-y-3"> 
+                        {/* Month/Year Selector */}
+                        <div className="glass rounded-2xl p-3">
+                            <div className="grid grid-cols-2 gap-2">
+                                <div className="flex flex-col gap-1">
+                                    <label className="text-[9px] font-bold opacity-60 uppercase tracking-wider px-1 flex items-center gap-1">
+                                        <span className="w-1 h-1 rounded-full bg-blue-500"></span> Bulan
+                                    </label>
+                                    <select value={activeMonth} onChange={(e) => setActiveMonth(parseInt(e.target.value))} className="text-[11px] p-2 rounded-xl font-bold input-premium">
+                                        {MONTH_NAMES.map((name, idx) => <option key={idx} value={idx}>{name}</option>)}
+                                    </select>
+                                </div>
+                                <div className="flex flex-col gap-1">
+                                    <label className="text-[9px] font-bold opacity-60 uppercase tracking-wider px-1 flex items-center gap-1">
+                                        <span className="w-1 h-1 rounded-full bg-amber-500"></span> Tahun
+                                    </label>
+                                    <select value={activeYear} onChange={(e) => setActiveYear(parseInt(e.target.value))} className="text-[11px] p-2 rounded-xl font-bold input-premium">
+                                        {AVAILABLE_YEARS.map(yr => <option key={yr} value={yr}>{yr}</option>)}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Hero Card */}
+                        <div className="hero-gradient rounded-3xl p-5 text-white shadow-2xl space-y-4 relative overflow-hidden"> 
+                            <div className="relative z-10">
+                                <div className="flex items-center justify-between mb-1">
+                                    <p className="text-blue-200 text-[10px] font-medium uppercase tracking-widest flex items-center gap-1.5">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                                        Total Saldo LBP
+                                    </p>
+                                    <span className="text-[9px] bg-white/10 backdrop-blur px-2 py-0.5 rounded-full border border-white/20">💰 Total</span>
+                                </div>
+                                <p className="text-3xl font-bold tracking-tight num-display bg-gradient-to-br from-white via-amber-100 to-amber-300 bg-clip-text text-transparent drop-shadow-lg">
+                                    {formatRupiah(financialData.total)}
+                                </p> 
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-2 pt-3 border-t border-white/10 relative z-10"> 
+                                <div className="bg-white/5 backdrop-blur rounded-xl p-2.5 border border-white/10">
+                                    <p className="text-[9px] text-blue-200 uppercase tracking-wider flex items-center gap-1">💵 Tunai</p>
+                                    <p className="font-bold text-sm text-white mt-1 num-display truncate">{formatRupiah(financialData.cash)}</p>
+                                </div> 
+                                <div className="bg-white/5 backdrop-blur rounded-xl p-2.5 border border-white/10">
+                                    <p className="text-[9px] text-blue-200 uppercase tracking-wider flex items-center gap-1">📱 QRIS / Transfer</p>
+                                    <p className="font-bold text-sm text-white mt-1 num-display truncate">{formatRupiah(financialData.qris)}</p>
+                                </div> 
+                            </div> 
+
+                            <div className="grid grid-cols-2 gap-2 pt-3 border-t border-white/10 relative z-10"> 
+                                <div className="bg-emerald-500/10 backdrop-blur rounded-xl p-2.5 border border-emerald-400/20">
+                                    <p className="text-[9px] text-emerald-300 uppercase tracking-wider font-bold flex items-center gap-1">📈 Total Masuk</p>
+                                    <p className="font-bold text-sm text-emerald-100 mt-1 num-display truncate">{formatRupiah(financialData.allTimeIncome)}</p>
+                                </div> 
+                                <div className="bg-rose-500/10 backdrop-blur rounded-xl p-2.5 border border-rose-400/20">
+                                    <p className="text-[9px] text-rose-300 uppercase tracking-wider font-bold flex items-center gap-1">📉 Total Keluar</p>
+                                    <p className="font-bold text-sm text-rose-100 mt-1 num-display truncate">{formatRupiah(financialData.allTimeExpense)}</p>
+                                </div> 
+                            </div> 
+
+                            <div className="pt-3 border-t border-white/10 space-y-2 relative z-10">
+                                <div className="flex items-center justify-between">
+                                    <div className="text-[10px] text-blue-100 font-medium flex items-center gap-1.5">
+                                        <span className="text-base">📊</span> Anggota Membayar
+                                    </div>
+                                    <span className="font-mono font-bold text-amber-300 bg-black/30 backdrop-blur px-2 py-0.5 rounded-full text-[10px] border border-amber-400/30">
+                                        {duesProgress.percent}%
+                                    </span>
+                                </div>
+                                <div className="progress-track w-full rounded-full h-2 overflow-hidden">
+                                    <div className="progress-fill h-2 rounded-full transition-all duration-700" style={{ width: `${duesProgress.percent}%` }}></div>
+                                </div>
+                                <div className="flex justify-between items-center text-[10px] text-blue-200">
+                                    <span>Sudah Membayar: <strong className="text-white">{duesProgress.paid}</strong> dari <strong className="text-white">{duesProgress.total} Anggota</strong></span>
+                                </div>
+                            </div>
+                        </div> 
+                        
+                        {/* Monthly Stats */}
+                        <div className="grid grid-cols-2 gap-2"> 
+                            <div className="premium-card p-3 rounded-2xl stat-card text-emerald-500">
+                                <div className="flex items-center gap-1.5 mb-1">
+                                    <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white text-xs shadow-md">📈</div>
+                                    <p className="text-[9px] opacity-60 font-bold uppercase tracking-wider">Masuk</p>
+                                </div>
+                                <p className="text-[9px] opacity-50 mb-0.5">{MONTH_NAMES[activeMonth].substring(0,3)}</p>
+                                <p className="text-sm font-bold text-emerald-500 num-display">{formatRupiah(financialData.income)}</p>
+                            </div> 
+                            <div className="premium-card p-3 rounded-2xl stat-card text-rose-500">
+                                <div className="flex items-center gap-1.5 mb-1">
+                                    <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-rose-400 to-rose-600 flex items-center justify-center text-white text-xs shadow-md">📉</div>
+                                    <p className="text-[9px] opacity-60 font-bold uppercase tracking-wider">Keluar</p>
+                                </div>
+                                <p className="text-[9px] opacity-50 mb-0.5">{MONTH_NAMES[activeMonth].substring(0,3)}</p>
+                                <p className="text-sm font-bold text-rose-500 num-display">{formatRupiah(financialData.expense)}</p>
+                            </div> 
+                        </div> 
+                        
+                        {/* Categories */}
+                        <div>
+                            <div className="grid grid-cols-1 gap-2"> 
+                                {categories.map((cat) => ( 
+                                    <div key={cat.id} className="category-card p-3 rounded-2xl shadow-sm">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-sm shadow-md">💼</div>
+                                                <div>
+                                                    <p className="text-[10px] font-bold uppercase tracking-wider opacity-60">{cat.name}</p>
+                                                    <p className="text-[9px] opacity-50">Saldo Kategori</p>
+                                                </div>
+                                            </div>
+                                            <p className="text-base font-bold num-display">{formatRupiah(financialData.catBalances[cat.id] || 0)}</p>
+                                        </div>
+                                    </div> 
+                                ))} 
+                            </div> 
+                        </div>
+
+                    </div> 
+                )}
+
+                {activeTab === 'anggota' && ( 
+                    <div className="flex flex-col space-y-3"> 
+                        {/* Month Navigator */}
+                        <div className="glass rounded-2xl p-2 flex items-center gap-2"> 
+                            <button onClick={() => { setActiveMonth(activeMonth === 0 ? 11 : activeMonth - 1); if(activeMonth === 0) setActiveYear(activeYear - 1); }} className="w-9 h-9 rounded-xl text-sm font-bold flex items-center justify-center transition border border-slate-500/20">‹</button> 
+                            <div className="font-bold text-sm flex-1 text-center font-display">
+                                {MONTH_NAMES[activeMonth]} <span className="text-amber-500">{activeYear}</span>
+                            </div> 
+                            <button onClick={() => { setActiveMonth(activeMonth === 11 ? 0 : activeMonth + 1); if(activeMonth === 11) setActiveYear(activeYear + 1); }} className="w-9 h-9 rounded-xl text-sm font-bold flex items-center justify-center transition border border-slate-500/20">›</button> 
+                        </div> 
+                        
+                        {isSuperAdmin && (
+                            <button onClick={handleAddMember} className="w-full p-3 btn-primary text-white rounded-2xl font-bold text-xs shadow-lg flex items-center justify-center gap-2">
+                                <span className="text-base">➕</span> Tambah Anggota Baru
+                            </button> 
+                        )}
+                        
+                        {/* Search & Filter */}
+                        <div className="glass rounded-2xl p-2 flex gap-2">
+                            <div className="flex-1 relative">
+                                <span className="absolute left-3 top-1/2 -translate-y-1/2 opacity-40 text-xs">🔍</span>
+                                <input 
+                                    type="text" 
+                                    placeholder="Cari nama anggota..." 
+                                    value={searchTerm} 
+                                    onChange={(e) => setSearchTerm(e.target.value)} 
+                                    className="w-full text-xs p-2 pl-8 rounded-xl input-premium" 
+                                />
+                            </div>
+                            <select 
+                                value={filterStatus} 
+                                onChange={(e) => setFilterStatus(e.target.value)} 
+                                className="w-28 text-xs p-2 rounded-xl input-premium font-medium"
+                            >
+                                <option value="all">Semua</option>
+                                <option value="lunas">✅ Lunas</option>
+                                <option value="belum">⏳ Belum</option>
+                            </select>
+                        </div>
+
+                        <div className="space-y-2">
+                            {filteredMembers.length === 0 && (
+                                <div className="text-center py-8 opacity-40">
+                                    <div className="text-4xl mb-2">👥</div>
+                                    <p className="text-xs">Data Anggota tidak ditemukan.</p>
+                                </div>
+                            )}
+                            {filteredMembers.map(m => {
+                                const paidAmount = getDuesTotalPaid(m.id);
+                                const isLunas = paidAmount > 0;
+
+                                return ( 
+                                <div key={m.id} className="citizen-row p-3 rounded-2xl flex justify-between items-center"> 
+                                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-md flex-none ${isLunas ? 'bg-gradient-to-br from-emerald-400 to-emerald-600' : 'bg-gradient-to-br from-slate-400 to-slate-600'}`}>
+                                            {m.name.charAt(0).toUpperCase()}
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <p className="font-bold text-xs truncate">{m.name}</p>
+                                            {m.createdBy && <p className="text-[8px] opacity-40 font-mono mt-0.5">by {m.createdBy}</p>}
+                                        </div>
+                                    </div> 
+                                    <div className="flex gap-1 items-center flex-none"> 
+                                        {isSuperAdmin && (
+                                            <>
+                                                <button onClick={() => handleEditMember(m)} className="text-blue-500 text-[10px] px-2 py-1 font-medium hover:bg-blue-500/10 rounded-lg transition">✎</button> 
+                                                <button onClick={() => handleDeleteMember(m.id)} className="text-rose-500 text-[10px] px-2 py-1 font-medium hover:bg-rose-500/10 rounded-lg transition">✕</button> 
+                                            </>
+                                        )}
+                                        
+                                        {isLunas ? (
+                                            <span className="text-[9px] bg-emerald-500/10 text-emerald-500 px-2.5 py-1 rounded-full font-bold border border-emerald-500/20 shadow-sm">
+                                                ✓ {formatRupiah(paidAmount)}
+                                            </span>
+                                        ) : (
+                                            <div className="flex items-center">
+                                                {!isSuperAdmin && <span className="text-[9px] bg-rose-500/10 text-rose-500 px-2.5 py-1 rounded-full font-bold border border-rose-500/20 shadow-sm">⏳ Belum</span>}
+                                                {isSuperAdmin && (
+                                                    <button onClick={() => {
+                                                        setShowPayModal({ isOpen: true, member: m });
+                                                    }} className="text-[9px] btn-gold px-3 py-1.5 rounded-full font-bold shadow-md">💳 Bayar</button>
+                                                )}
+                                            </div>
+                                        )} 
+                                    </div> 
+                                </div> 
+                                )
+                            })}
+                        </div>
+                    </div> 
+                )}
+
+                {activeTab === 'keuangan' && ( 
+                    <div className="flex flex-col space-y-3"> 
+                        {isSuperAdmin && (
+                            <div className="flex gap-2">
+                                <button onClick={() => { setEditTransData(null); setShowTransModal(true); }} className="flex-1 btn-primary text-white p-3 rounded-2xl font-bold text-xs shadow-lg flex items-center justify-center gap-2">
+                                    <span className="text-base">➕</span> Transaksi Baru
+                                </button> 
+                                
+                                <button onClick={handleSyncToSheets} disabled={isSyncing} className={`flex-none px-4 btn-emerald text-white rounded-2xl font-bold text-xs shadow-lg flex items-center justify-center gap-1.5 ${isSyncing ? 'opacity-60 cursor-not-allowed' : ''}`}>
+                                    {isSyncing ? '⏳' : '☁️'} <span className="hidden sm:inline">Sheets</span>
+                                </button> 
+                            </div>
+                        )}
+
+                        {/* Filters */}
+                        <div className="glass rounded-2xl p-3 space-y-2">
+                            <div className="grid grid-cols-2 gap-2">
+                                <select value={filterTransMonth} onChange={(e) => setFilterTransMonth(e.target.value)} className="text-[10px] p-2 rounded-xl input-premium truncate font-medium">
+                                    <option value="all">📅 Semua Bulan</option>
+                                    {MONTH_NAMES.map((name, idx) => <option key={idx} value={idx}>{name}</option>)}
+                                </select>
+                                <select value={filterTransYear} onChange={(e) => setFilterTransYear(e.target.value)} className="text-[10px] p-2 rounded-xl input-premium truncate font-medium">
+                                    <option value="all">🗓️ Semua Tahun</option>
+                                    {AVAILABLE_YEARS.map(yr => <option key={yr} value={yr}>{yr}</option>)}
+                                </select>
+                            </div>
+                            <div className="grid grid-cols-3 gap-2">
+                                <select value={filterType} onChange={(e) => setFilterType(e.target.value)} className="text-[10px] p-2 rounded-xl input-premium truncate font-medium">
+                                    <option value="all">🔄 Tipe</option>
+                                    <option value="masuk">➕ Masuk</option>
+                                    <option value="keluar">➖ Keluar</option>
+                                </select>
+                                <select value={filterMethod} onChange={(e) => setFilterMethod(e.target.value)} className="text-[10px] p-2 rounded-xl input-premium truncate font-medium">
+                                    <option value="all">💳 Metode</option>
+                                    <option value="tunai">💵 Tunai</option>
+                                    <option value="qris">📱 QRIS / Transfer</option>
+                                </select>
+                                <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)} className="text-[10px] p-2 rounded-xl input-premium truncate font-medium">
+                                    <option value="all">📂 Kategori</option>
+                                    {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                                </select>
+                            </div>
+                        </div>
+
+                        {/* Summary */}
+                        <div className="hero-gradient rounded-2xl p-3 shadow-lg flex justify-between items-center text-white relative overflow-hidden">
+                            <div className="relative z-10">
+                                <span className="text-[10px] text-blue-200 uppercase tracking-wider font-bold">📊 {filteredTransactions.length} Transaksi</span>
+                            </div>
+                            <div className="flex gap-3 relative z-10">
+                                <div className="text-right">
+                                    <p className="text-[8px] text-emerald-300 uppercase">Masuk</p>
+                                    <p className="text-xs font-bold text-emerald-200 num-display">+{formatRupiah(filteredTransactions.filter(t => t.type === 'masuk').reduce((sum, t) => sum + (parseInt(t.nominal)||0), 0))}</p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-[8px] text-rose-300 uppercase">Keluar</p>
+                                    <p className="text-xs font-bold text-rose-200 num-display">-{formatRupiah(filteredTransactions.filter(t => t.type === 'keluar').reduce((sum, t) => sum + (parseInt(t.nominal)||0), 0))}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Transactions List */}
+                        <div className="space-y-2">
+                            {filteredTransactions.map(t => ( 
+                                <div key={t.id} className="trans-row p-3 rounded-2xl flex justify-between items-center"> 
+                                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm shadow-md flex-none ${t.type === 'masuk' ? 'bg-gradient-to-br from-emerald-400 to-emerald-600' : 'bg-gradient-to-br from-rose-400 to-rose-600'}`}>
+                                            {t.type === 'masuk' ? '↗' : '↘'}
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <p className="font-bold text-xs truncate">{t.ket}</p>
+                                            <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+                                                <span className="text-[9px] font-mono opacity-60">{t.date.split('T')[0]}</span>
+                                                <span className="text-[8px] font-mono px-1.5 py-0.5 bg-slate-500/10 rounded-md border border-slate-500/20">{t.method === 'qris' ? 'QRIS / TRANSFER' : 'TUNAI'}</span>
+                                                {t.createdBy && <span className="text-[8px] font-mono px-1.5 py-0.5 bg-blue-500/10 text-blue-400 rounded-md border border-blue-500/20">by {t.createdBy}</span>}
+                                            </div>
+                                        </div>
+                                    </div> 
+                                    <div className="flex items-center gap-2 flex-none"> 
+                                        <p className={`font-bold text-sm num-display ${t.type === 'masuk' ? 'text-emerald-500' : 'text-rose-500'}`}>
+                                            {t.type === 'masuk' ? '+' : '-'}{formatRupiah(t.nominal)}
+                                        </p> 
+                                        
+                                        {isSuperAdmin && (
+                                            <div className="flex gap-0.5 border-l border-slate-500/20 pl-2 ml-1">
+                                                <button onClick={() => { setEditTransData(t); setShowTransModal(true); }} className="text-blue-500 text-xs hover:bg-blue-500/10 w-7 h-7 rounded-lg flex items-center justify-center transition" title="Edit">✎</button> 
+                                                <button onClick={() => handleDeleteTransaction(t.id)} className="text-rose-500 text-xs hover:bg-rose-500/10 w-7 h-7 rounded-lg flex items-center justify-center transition" title="Hapus">✕</button> 
+                                            </div>
+                                        )}
+                                    </div> 
+                                </div> 
+                            ))}
+                            {filteredTransactions.length === 0 && (
+                                <div className="text-center py-8 opacity-40">
+                                    <div className="text-4xl mb-2">📋</div>
+                                    <p className="text-xs">Tidak ada riwayat transaksi</p>
+                                </div>
+                            )}
+                        </div>
+                    </div> 
+                )} 
+            </main>
+
+            {/* BOTTOM NAVIGATION */}
+            <nav className="flex-none bottom-nav flex justify-around items-center p-2 pb-safe"> 
+                <button onClick={() => setActiveTab('home')} className={`nav-item flex flex-col items-center gap-1 w-20 py-2 rounded-xl ${activeTab === 'home' ? 'active' : ''}`}>
+                    <svg className={`nav-icon w-5 h-5 ${activeTab === 'home' ? 'text-blue-500' : 'opacity-40'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={activeTab === 'home' ? 2.5 : 2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    <span className={`nav-label text-[10px] ${activeTab === 'home' ? 'text-blue-500 font-bold' : 'opacity-50 font-medium'}`}>Beranda</span>
+                </button> 
+                
+                <button onClick={() => setActiveTab('anggota')} className={`nav-item flex flex-col items-center gap-1 w-20 py-2 rounded-xl ${activeTab === 'anggota' ? 'active' : ''}`}>
+                    <svg className={`nav-icon w-5 h-5 ${activeTab === 'anggota' ? 'text-blue-500' : 'opacity-40'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={activeTab === 'anggota' ? 2.5 : 2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    <span className={`nav-label text-[10px] ${activeTab === 'anggota' ? 'text-blue-500 font-bold' : 'opacity-50 font-medium'}`}>Anggota</span>
+                </button> 
+                
+                <button onClick={() => setActiveTab('keuangan')} className={`nav-item flex flex-col items-center gap-1 w-20 py-2 rounded-xl ${activeTab === 'keuangan' ? 'active' : ''}`}>
+                    <svg className={`nav-icon w-5 h-5 ${activeTab === 'keuangan' ? 'text-blue-500' : 'opacity-40'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={activeTab === 'keuangan' ? 2.5 : 2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                    <span className={`nav-label text-[10px] ${activeTab === 'keuangan' ? 'text-blue-500 font-bold' : 'opacity-50 font-medium'}`}>Keuangan</span>
+                </button> 
+            </nav> 
+
+            {/* LOGIN MODAL */}
+            {showLoginModal && (
+                <div className="fixed inset-0 modal-backdrop z-[70] flex items-center justify-center p-4"> 
+                    <div className="modal-content p-6 rounded-3xl w-full max-w-sm"> 
+                        <div className="text-center mb-5">
+                            <div className="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-800 flex items-center justify-center text-white text-2xl shadow-lg mb-3">🔐</div>
+                            <h3 className="font-display font-bold text-xl">Login Aplikasi LBP</h3>
+                            <p className="text-[11px] opacity-60 mt-1">Masuk dengan Akun Anda</p>
+                        </div>
+                        
+                        {loginError && <p className="text-xs text-rose-500 bg-rose-500/10 p-3 rounded-xl mb-4 text-center border border-rose-500/20 font-medium">⚠️ {loginError}</p>}
+                        
+                        <form onSubmit={handleLogin} className="space-y-3">
+                            <div>
+                                <label className="text-[10px] font-bold opacity-60 ml-1 uppercase tracking-wider">Username</label>
+                                <input name="username" type="text" className="w-full mt-1.5 text-sm p-3 rounded-xl input-premium" required />
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-bold opacity-60 ml-1 uppercase tracking-wider">Password</label>
+                                <input name="password" type="password" className="w-full mt-1.5 text-sm p-3 rounded-xl input-premium" required />
+                            </div>
+                            <div className="flex gap-2 pt-2">
+                                <button type="button" onClick={() => { setShowLoginModal(false); setLoginError(''); }} className="flex-1 border border-slate-500/20 p-3 rounded-xl text-xs font-bold transition">Batal</button> 
+                                <button type="submit" className="flex-1 btn-primary text-white p-3 rounded-xl text-xs font-bold shadow-lg">Login</button> 
+                            </div>
+                        </form>
+                    </div> 
+                </div> 
+            )}
+
+            {/* MODAL SETTING UTAMA */}
+            {showSettingsModal && (
+                <div className="fixed inset-0 modal-backdrop z-[70] flex items-center justify-center p-4">
+                    <div className="modal-content p-6 rounded-3xl w-full max-w-sm space-y-4">
+                        <div className="text-center">
+                            <div className="w-12 h-12 mx-auto rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-800 flex items-center justify-center text-white text-xl shadow-lg mb-2">⚙️</div>
+                            <h3 className="font-display font-bold text-lg">Pengaturan</h3>
+                            <p className="text-[11px] opacity-60">Sesi: <span className="font-bold">{currentUser?.username}</span> ({currentUser?.role})</p>
+                        </div>
+
+                        <div className="space-y-2 pt-2">
+                            {/* KHUSUS SUPERADMIN: KELOLA AKUN & KATEGORI */}
+                            {isSuperAdmin && (
+                                <>
+                                    <button onClick={() => { setShowSettingsModal(false); setShowManageUsersModal(true); }} className="w-full p-3 rounded-xl bg-slate-500/10 hover:bg-slate-500/20 text-xs font-bold flex items-center gap-3 transition">
+                                        <span className="text-base">👤</span> Kelola Akun Login
+                                    </button>
+                                    <button onClick={() => { setShowSettingsModal(false); setShowManageCategoriesModal(true); }} className="w-full p-3 rounded-xl bg-slate-500/10 hover:bg-slate-500/20 text-xs font-bold flex items-center gap-3 transition">
+                                        <span className="text-base">📁</span> Ubah Kategori
+                                    </button>
+                                </>
+                            )}
+
+                            {/* LOGOUT UNTUK SEMUA USER (BASIC & SUPERADMIN) */}
+                            <button onClick={() => { setShowLogoutModal(true); }} className="w-full p-3 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 text-xs font-bold flex items-center gap-3 transition">
+                                <span className="text-base">🚪</span> Logout Akun
+                            </button>
+                        </div>
+
+                        {/* KREDIT PEMBUAT APLIKASI */}
+                        <div className="pt-3 border-t border-slate-500/20 text-center">
+                            <p className="text-[10px] opacity-50">Pembuat Aplikasi:</p>
+                            <p className="text-xs font-bold mt-0.5">Iyann</p>
+                            <a 
+                                href="https://wa.me/6287842861656" 
+                                target="_blank" 
+                                rel="noreferrer" 
+                                className="inline-flex items-center gap-1.5 mt-2 text-[10px] bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 px-3 py-1.5 rounded-full border border-emerald-500/30 font-bold transition">
+                                💬 WA: 087842861656
+                            </a>
+                        </div>
+
+                        <button onClick={() => setShowSettingsModal(false)} className="w-full border border-slate-500/20 p-2.5 rounded-xl text-xs font-bold">Tutup</button>
+                    </div>
+                </div>
+            )}
+
+            {/* MODAL KELOLA USER LOGIN */}
+            {showManageUsersModal && isSuperAdmin && (
+                <div className="fixed inset-0 modal-backdrop z-[75] flex items-center justify-center p-4"> 
+                    <div className="modal-content p-6 rounded-3xl w-full max-w-sm space-y-4"> 
+                        <div className="text-center">
+                            <div className="w-12 h-12 mx-auto rounded-2xl bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center text-white text-xl shadow-lg mb-2">👤</div>
+                            <h3 className="font-display font-bold text-lg">Kelola Akun Login</h3>
+                            <p className="text-[10px] opacity-60">Tambah Superadmin / User Basic</p>
+                        </div>
+
+                        <form onSubmit={handleAddUser} className="space-y-2 border-b border-slate-500/20 pb-4">
+                            <input name="new_username" placeholder="Username Baru" className="w-full text-xs p-2.5 rounded-xl input-premium" required />
+                            <input name="new_password" type="password" placeholder="Password Baru" className="w-full text-xs p-2.5 rounded-xl input-premium" required />
+                            <select name="new_role" className="w-full text-xs p-2.5 rounded-xl input-premium">
+                                <option value="basic">👤 Basic User (Hanya Pantau)</option>
+                                <option value="superadmin">👑 Superadmin (Full Akses)</option>
+                            </select>
+                            <button type="submit" className="w-full btn-emerald text-white p-2.5 rounded-xl text-xs font-bold shadow-md">+ Tambah Akun Baru</button>
+                        </form>
+
+                        <div className="max-h-40 overflow-y-auto space-y-1.5">
+                            <p className="text-[10px] font-bold opacity-60 uppercase">Daftar Akun Tambahan:</p>
+                            {appUsers.length === 0 ? (
+                                <p className="text-xs opacity-40 text-center py-2">Belum ada akun tambahan.</p>
+                            ) : (
+                                appUsers.map(usr => (
+                                    <div key={usr.id} className="flex justify-between items-center p-2 rounded-xl bg-slate-500/10 border border-slate-500/20 text-xs">
+                                        <div>
+                                            <span className="font-bold">{usr.username}</span>
+                                            <span className={`text-[9px] ml-1.5 px-1.5 py-0.5 rounded font-bold ${usr.role === 'superadmin' ? 'bg-amber-500/20 text-amber-500' : 'bg-blue-500/20 text-blue-400'}`}>
+                                                {usr.role === 'superadmin' ? 'Superadmin' : 'Basic'}
+                                            </span>
+                                            <span className="text-[9px] opacity-40 block">Pass: {usr.password}</span>
+                                        </div>
+                                        <button onClick={() => handleDeleteUser(usr.id)} className="text-rose-500 hover:bg-rose-500/10 px-2 py-1 rounded text-xs">Hapus</button>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+
+                        <button onClick={() => setShowManageUsersModal(false)} className="w-full border border-slate-500/20 p-2.5 rounded-xl text-xs font-bold">Tutup</button>
+                    </div>
+                </div>
+            )}
+
+            {/* MODAL KELOLA KATEGORI */}
+            {showManageCategoriesModal && isSuperAdmin && (
+                <div className="fixed inset-0 modal-backdrop z-[75] flex items-center justify-center p-4"> 
+                    <div className="modal-content p-6 rounded-3xl w-full max-w-sm space-y-4"> 
+                        <div className="text-center">
+                            <div className="w-12 h-12 mx-auto rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-800 flex items-center justify-center text-white text-xl shadow-lg mb-2">📁</div>
+                            <h3 className="font-display font-bold text-lg">Kelola Kategori</h3>
+                            <p className="text-[10px] opacity-60">Tambah / Hapus Kategori Transaksi</p>
+                        </div>
+
+                        <form onSubmit={handleAddCategory} className="space-y-2 border-b border-slate-500/20 pb-4">
+                            <input name="cat_name" placeholder="Nama Kategori Baru" className="w-full text-xs p-2.5 rounded-xl input-premium" required />
+                            <button type="submit" className="w-full btn-emerald text-white p-2.5 rounded-xl text-xs font-bold shadow-md">+ Tambah Kategori</button>
+                        </form>
+
+                        <div className="max-h-40 overflow-y-auto space-y-1.5">
+                            <p className="text-[10px] font-bold opacity-60 uppercase">Daftar Kategori Terpasang:</p>
+                            {categories.map(c => (
+                                <div key={c.id} className="flex justify-between items-center p-2 rounded-xl bg-slate-500/10 border border-slate-500/20 text-xs">
+                                    <span className="font-semibold">{c.name}</span>
+                                    <button onClick={() => handleDeleteCategory(c.id)} className="text-rose-500 hover:bg-rose-500/10 px-2 py-1 rounded text-xs">Hapus</button>
+                                </div>
+                            ))}
+                        </div>
+
+                        <button onClick={() => setShowManageCategoriesModal(false)} className="w-full border border-slate-500/20 p-2.5 rounded-xl text-xs font-bold">Tutup</button>
+                    </div>
+                </div>
+            )}
+
+            {/* PAYMENT MODAL */}
+            {showPayModal.isOpen && isSuperAdmin && (() => {
+                const m = showPayModal.member;
+                return (
+                    <div className="fixed inset-0 modal-backdrop z-[60] flex items-center justify-center p-4"> 
+                        <form onSubmit={handlePayDuesSubmit} className="modal-content p-6 rounded-3xl w-full max-w-sm space-y-3"> 
+                            <div className="text-center mb-2">
+                                <div className="w-12 h-12 mx-auto rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white text-xl shadow-lg mb-2">💳</div>
+                                <h3 className="font-display font-bold text-lg">Pembayaran Anggota</h3>
+                                <p className="font-bold text-blue-500 text-sm mt-0.5">{m.name}</p>
+                            </div>
+
+                            <div>
+                                <label className="text-[10px] font-bold opacity-60 ml-1 uppercase tracking-wider">Nominal Pembayaran (Rp)</label>
+                                <input name="pay_nominal" type="number" placeholder="Contoh: 50000" className="w-full mt-1 text-xs p-3 rounded-xl input-premium" required />
+                            </div>
+
+                            <div>
+                                <label className="text-[10px] font-bold opacity-60 ml-1 uppercase tracking-wider">Keterangan Pembayaran</label>
+                                <input name="pay_ket" type="text" defaultValue={`Iuran Bulan ${MONTH_NAMES[activeMonth]}`} placeholder="Keterangan..." className="w-full mt-1 text-xs p-3 rounded-xl input-premium" required />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label className="text-[10px] font-bold opacity-60 ml-1 uppercase tracking-wider">Metode</label>
+                                    <select name="pay_method" className="w-full mt-1 text-xs p-3 rounded-xl input-premium">
+                                        <option value="tunai">💵 Tunai</option>
+                                        <option value="qris">📱 QRIS / Transfer</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="text-[10px] font-bold opacity-60 ml-1 uppercase tracking-wider">Kategori</label>
+                                    <select name="pay_category" className="w-full mt-1 text-xs p-3 rounded-xl input-premium">
+                                        {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div className="flex gap-2 pt-2">
+                                <button type="button" onClick={() => setShowPayModal({ isOpen: false, member: null })} className="flex-1 border border-slate-500/20 p-3 rounded-xl text-xs font-medium transition">Batal</button> 
+                                <button type="submit" className="flex-1 btn-gold text-amber-950 p-3 rounded-xl text-xs font-bold shadow-lg">💾 Simpan Bayar</button> 
+                            </div>
+                        </form> 
+                    </div> 
+                );
+            })()}
+
+            {/* TRANSACTION MODAL */}
+            {showTransModal && isSuperAdmin && ( 
+                <div className="fixed inset-0 modal-backdrop z-[60] flex items-center justify-center p-4"> 
+                    <form key={editTransData ? editTransData.id : 'new'} onSubmit={handleSaveTransaction} className="modal-content p-6 rounded-3xl w-full max-w-sm space-y-3"> 
+                        <div className="text-center mb-2">
+                            <div className="w-12 h-12 mx-auto rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-800 flex items-center justify-center text-white text-xl shadow-lg mb-2">
+                                {editTransData ? '✎' : '➕'}
+                            </div>
+                            <h3 className="font-display font-bold text-lg">{editTransData ? 'Edit Transaksi' : 'Transaksi Baru'}</h3>
+                        </div>
+                        
+                        <input name="nom" type="number" defaultValue={editTransData?.nominal || ''} placeholder="Nominal (Rp)" className="w-full text-xs p-3 rounded-xl input-premium" required /> 
+                        <input name="ket" defaultValue={editTransData?.ket || ''} placeholder="Keterangan" className="w-full text-xs p-3 rounded-xl input-premium" required /> 
+                        <input name="date" type="date" defaultValue={editTransData ? editTransData.date.split('T')[0] : localToday} className="w-full text-xs p-3 rounded-xl input-premium" required />
+                        
+                        <div className="grid grid-cols-2 gap-2">
+                            <select name="type" defaultValue={editTransData?.type || 'masuk'} className="w-full text-xs p-3 rounded-xl input-premium">
+                                <option value="masuk">➕ Pemasukan</option>
+                                <option value="keluar">➖ Pengeluaran</option>
+                            </select> 
+                            <select name="method" defaultValue={editTransData?.method || 'tunai'} className="w-full text-xs p-3 rounded-xl input-premium">
+                                <option value="tunai">💵 Tunai</option>
+                                <option value="qris">📱 QRIS / Transfer</option>
+                            </select> 
+                        </div>
+                        
+                        <select name="cat" defaultValue={editTransData?.category || categories[0]?.id} className="w-full text-xs p-3 rounded-xl input-premium">
+                            {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                        </select> 
+                        
+                        <div className="flex gap-2 pt-2">
+                            <button type="button" onClick={() => { setShowTransModal(false); setEditTransData(null); }} className="flex-1 border border-slate-500/20 p-3 rounded-xl text-xs font-medium transition">Batal</button> 
+                            <button type="submit" className="flex-1 btn-primary text-white p-3 rounded-xl text-xs font-bold shadow-lg">💾 Simpan</button> 
+                        </div>
+                    </form> 
+                </div> 
+            )}
+
+            {/* MODAL SERAGAM */}
+            {customModal.isOpen && (
+                <div className="fixed inset-0 modal-backdrop z-[85] flex items-center justify-center p-4"> 
+                    <div className="modal-content p-6 rounded-3xl w-full max-w-xs text-center space-y-3"> 
+                        <div className="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-800 flex items-center justify-center text-white text-2xl shadow-lg">
+                            {customModal.icon}
+                        </div>
+                        <h3 className="font-display font-bold text-lg">{customModal.title}</h3>
+                        <p className="text-xs opacity-60">{customModal.message}</p>
+                        
+                        {customModal.type === 'prompt' && (
+                            <input 
+                                id="customModalInput" 
+                                type="text" 
+                                defaultValue={customModal.defaultValue} 
+                                className="w-full text-xs p-3 rounded-xl input-premium" 
+                                autoFocus
+                            />
+                        )}
+
+                        <div className="flex gap-2 pt-2">
+                            {customModal.type !== 'alert' && (
+                                <button 
+                                    onClick={() => setCustomModal({ ...customModal, isOpen: false })} 
+                                    className="flex-1 border border-slate-500/20 p-3 rounded-xl text-xs font-bold transition">
+                                    Batal
+                                </button> 
+                            )}
+                            <button 
+                                onClick={() => {
+                                    if (customModal.type === 'prompt') {
+                                        const inputVal = document.getElementById('customModalInput')?.value;
+                                        if (customModal.onConfirm) customModal.onConfirm(inputVal);
+                                    } else if (customModal.onConfirm) {
+                                        customModal.onConfirm();
+                                    }
+                                    setCustomModal({ ...customModal, isOpen: false });
+                                }} 
+                                className="flex-1 btn-primary text-white p-3 rounded-xl text-xs font-bold shadow-lg">
+                                {customModal.type === 'alert' ? 'OK' : 'Lanjutkan'}
+                            </button> 
+                        </div>
+                    </div> 
+                </div> 
+            )}
+
+            {/* LOGOUT CONFIRMATION MODAL */}
+            {showLogoutModal && (
+                <div className="fixed inset-0 modal-backdrop z-[80] flex items-center justify-center p-4"> 
+                    <div className="modal-content p-6 rounded-3xl w-full max-w-xs text-center"> 
+                        <div className="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-amber-500 to-red-500 flex items-center justify-center text-white text-2xl shadow-lg mb-3">🚪</div>
+                        <h3 className="font-display font-bold text-lg">Konfirmasi Keluar</h3>
+                        <p className="text-xs opacity-60 mt-2 mb-4">Apakah Anda yakin ingin keluar dari akun <strong className="opacity-90">{currentUser?.username}</strong>?</p>
+                        
+                        <div className="flex gap-2">
+                            <button 
+                                onClick={() => setShowLogoutModal(false)} 
+                                className="flex-1 border border-slate-500/20 p-3 rounded-xl text-xs font-bold transition">
+                                Batal
+                            </button> 
+                            <button 
+                                onClick={handleLogoutConfirm} 
+                                className="flex-1 bg-gradient-to-br from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white p-3 rounded-xl text-xs font-bold shadow-lg">
+                                Ya, Keluar
+                            </button> 
+                        </div>
+                    </div> 
+                </div> 
+            )}
+
+        </div> 
+    ); 
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script> 
+</body>
+</html>
