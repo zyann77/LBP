@@ -303,10 +303,10 @@ if (SUPABASE_URL && !SUPABASE_URL.includes("YOUR_SUPABASE_PROJECT_URL")) {
     supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
 
-// COMPONENT LOGO LBP SVG REUSABLE
+// COMPONENT LOGO LBP SVG REUSABLE (DENGAN VIEWBOX SIMETRIS UNTUK DITENGAHKAN PERFECT)
 const LBPLogo = ({ className = "w-full max-w-[200px]" }) => (
     <div className={`flex items-center justify-center ${className}`}>
-        <svg viewBox="0 0 1000 450" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto logo-lbp-svg">
+        <svg viewBox="100 130 820 280" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto logo-lbp-svg">
             <g transform="skewX(-18)">
                 <text className="text-l" x="180" y="360">L</text>
                 <text className="text-bp" x="380" y="360">B</text>
@@ -788,15 +788,13 @@ function App() {
         });
     }, [transactions, filterTransMonth, filterTransYear, filterType, filterCategory, filterMethod]);
 
-    // HALAMAN LOGIN TERKUNCI
+    // HALAMAN LOGIN TERKUNCI (HANYA LOGO DI TENGAH SIMETRIS TANDA TEXT)
     if (!isLoggedIn) {
         return (
             <div className="max-w-md mx-auto h-screen flex flex-col justify-center items-center p-4 relative">
                 <div className="bg-white p-6 rounded-3xl w-full max-w-sm shadow-2xl space-y-4 text-slate-900 border border-slate-100">
-                    <div className="text-center">
-                        <LBPLogo className="w-full max-w-[200px] mb-2" />
-                        <h2 className="font-display font-bold text-2xl text-slate-800">LBP Accounting</h2>
-                        <p className="text-xs text-slate-500 font-medium mt-1">Silakan Login Terlebih Dahulu</p>
+                    <div className="flex justify-center items-center w-full my-2">
+                        <LBPLogo className="w-full max-w-[180px] mx-auto" />
                     </div>
 
                     {loginError && <p className="text-xs text-rose-600 bg-rose-50 p-3 rounded-xl text-center border border-rose-200 font-semibold">⚠️ {loginError}</p>}
