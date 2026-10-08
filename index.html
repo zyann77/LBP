@@ -233,10 +233,16 @@
         .light-theme .category-card {
             background: rgba(255, 255, 255, 0.9);
             border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
         }
         .dark-theme .category-card {
             background: rgba(30, 41, 59, 0.9);
             border: 1px solid #334155;
+            transition: all 0.2s ease;
+        }
+        .category-card:hover {
+            transform: translateY(-2px);
+            border-color: #3b82f6;
         }
 
         .num-display {
@@ -411,6 +417,12 @@ function App() {
         setSettingSubView('main');
     };
 
+    // FUNGSI KLIK KATEGORI DI BERANDA UNTUK BUKA HISTORY KEUANGAN
+    const handleCategoryClick = (catId) => {
+        setFilterCategory(catId);
+        setActiveTab('keuangan');
+    };
+
     // MANAGEMENT USER LOGIN
     const handleAddUser = (e) => {
         e.preventDefault();
@@ -525,7 +537,7 @@ function App() {
         
         const m = showPayModal.member; 
         const nominalVal = parseInt(e.target.pay_nominal.value) || 0;
-        const ketVal = e.target.pay_ket.value.trim() || `Iuran ${m.name}`;
+        const ketVal = e.target.pay_ket.value.trim() || `Iuran Bulan ${MONTH_NAMES[activeMonth]}`;
         const methodVal = e.target.pay_method.value;
         const catVal = e.target.pay_category.value;
         
@@ -870,21 +882,27 @@ function App() {
                             </div> 
                         </div> 
                         
-                        {/* Categories */}
+                        {/* Categories (BISA DIKLIK UNTUK LIHAT HISTORY PENUH KATEGORI) */}
                         <div>
                             <div className="grid grid-cols-1 gap-2"> 
                                 {categories.map((cat) => ( 
-                                    <div key={cat.id} className="category-card p-3 rounded-2xl shadow-sm">
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-sm shadow-md">💼</div>
-                                                <div>
-                                                    <p className="text-[10px] font-bold uppercase tracking-wider opacity-60">{cat.name}</p>
-                                                    <p className="text-[9px] opacity-50">Saldo Kategori</p>
-                                                </div>
+                                    <div 
+                                        key={cat.id} 
+                                        onClick={() => handleCategoryClick(cat.id)}
+                                        className="category-card p-3 rounded-2xl shadow-sm cursor-pointer hover:border-blue-500/50 flex items-center justify-between transition-all active:scale-[0.98]"
+                                        title="Klik untuk lihat rincian transaksi"
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-sm shadow-md">💼</div>
+                                            <div>
+                                                <p className="text-[10px] font-bold uppercase tracking-wider opacity-60 flex items-center gap-1">
+                                                    {cat.name}
+                                                    <span className="text-[8px] opacity-40">🔍</span>
+                                                </p>
+                                                <p className="text-[9px] opacity-50">Klik lihat riwayat</p>
                                             </div>
-                                            <p className="text-base font-bold num-display">{formatRupiah(financialData.catBalances[cat.id] || 0)}</p>
                                         </div>
+                                        <p className="text-base font-bold num-display">{formatRupiah(financialData.catBalances[cat.id] || 0)}</p>
                                     </div> 
                                 ))} 
                             </div> 
@@ -1199,7 +1217,7 @@ function App() {
                             </div>
                         )}
 
-                        {/* FOOTER PEMBUAT APLIKASI DI POSISI STANDAR UMUM (BAGIAN BAWAH APLIKASI) */}
+                        {/* FOOTER PEMBUAT APLIKASI DI POSISI STANDAR UMUM */}
                         <div className="pt-6 pb-2 text-center space-y-2 border-t border-slate-500/10 mt-auto">
                             <p className="text-[11px] font-mono opacity-60">Created By: <strong className="text-blue-400">Iyann</strong></p>
                             <a 
@@ -1214,7 +1232,7 @@ function App() {
                 )}
             </main>
 
-            {/* BOTTOM NAVIGATION (MENU SETTING DISINIPAN DI BAGIAN BAWAH) */}
+            {/* BOTTOM NAVIGATION */}
             <nav className="flex-none bottom-nav flex justify-around items-center p-2 pb-safe"> 
                 <button onClick={() => setActiveTab('home')} className={`nav-item flex flex-col items-center gap-1 w-16 py-2 rounded-xl ${activeTab === 'home' ? 'active' : ''}`}>
                     <svg className={`nav-icon w-5 h-5 ${activeTab === 'home' ? 'text-blue-500' : 'opacity-40'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={activeTab === 'home' ? 2.5 : 2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
@@ -1267,7 +1285,7 @@ function App() {
                 </div> 
             )}
 
-            {/* PAYMENT MODAL */}
+            {/* PAYMENT MODAL (PLACEHOLDER DIGANTI CONTOR IURAN) */}
             {showPayModal.isOpen && isSuperAdmin && (() => {
                 const m = showPayModal.member;
                 return (
@@ -1286,7 +1304,7 @@ function App() {
 
                             <div>
                                 <label className="text-[10px] font-bold opacity-60 ml-1 uppercase tracking-wider">Keterangan Pembayaran</label>
-                                <input name="pay_ket" type="text" defaultValue={`Iuran Bulan ${MONTH_NAMES[activeMonth]}`} placeholder="Keterangan..." className="w-full mt-1 text-xs p-3 rounded-xl input-premium" required />
+                                <input name="pay_ket" type="text" placeholder={`Contoh: Iuran Bulan ${MONTH_NAMES[activeMonth]}`} className="w-full mt-1 text-xs p-3 rounded-xl input-premium" required />
                             </div>
 
                             <div className="grid grid-cols-2 gap-2">
