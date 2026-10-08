@@ -48,6 +48,15 @@
             min-height: 100vh;
         }
 
+        /* HEADER DIBUAT TERANG AGAR LOGO DENGAN ELEMEN BIRU TUA BISA TERLIHAT DENGAN JELAS */
+        .header-light {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            color: #0f172a;
+        }
+
         /* Marquee */
         .marquee-container {
             display: flex;
@@ -62,7 +71,7 @@
             animation: marquee 20s linear infinite, shimmer 3s linear infinite;
             padding-left: 100%;
             display: inline-block;
-            background: linear-gradient(90deg, #fbbf24, #ffffff, #fbbf24);
+            background: linear-gradient(90deg, #d97706, #2563eb, #d97706);
             background-size: 200% auto;
             -webkit-background-clip: text;
             background-clip: text;
@@ -256,7 +265,7 @@
             border-color: #3b82f6;
         }
 
-        /* Style Logo LBP SVG */
+        /* Style Logo LBP SVG Asli */
         .logo-lbp-svg .text-l {
             font-family: 'Arial Black', Impact, sans-serif;
             font-size: 300px;
@@ -818,11 +827,10 @@ function App() {
     return ( 
         <div className="max-w-md mx-auto h-screen flex flex-col relative"> 
 
-            {/* HEADER UTAMA DENGAN LOGO DI ATAS KIRI */}
-            <header className="hero-gradient text-white px-3 py-2.5 shadow-2xl flex-none flex justify-between items-center sticky top-0 z-50 pt-safe"> 
-                {/* 1. LOGO DITERAPKAN DI HEADER ATAS KIRI */}
+            {/* HEADER DENGAN BACKGROUND KONTRAST TERANG AGAR LOGO KELIHATAN JELAS */}
+            <header className="header-light px-3 py-2 flex-none flex justify-between items-center sticky top-0 z-50 pt-safe"> 
                 <div className="flex items-center gap-2 flex-1 min-w-0">
-                    <LBPLogo className="w-10 h-auto flex-none" />
+                    <LBPLogo className="w-12 h-auto flex-none drop-shadow-sm" />
                     <div className="marquee-container">
                         <h1 className="marquee-content text-[11px] font-bold tracking-[0.2em] uppercase font-display">
                             ✦ LBP (LAKSANA BUNGA PASIR) ✦
@@ -833,18 +841,18 @@ function App() {
                 <div className="flex items-center gap-1.5 flex-none">
                     <button 
                         onClick={() => setIsNightMode(!isNightMode)} 
-                        className="p-1.5 bg-white/10 hover:bg-white/20 rounded-full text-xs border border-white/20 transition"
+                        className="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full text-xs border border-slate-300 transition shadow-sm"
                         title={isNightMode ? "Mode Terang" : "Mode Malam"}
                     >
                         {isNightMode ? '☀️' : '🌙'}
                     </button>
 
-                    <span className="text-[10px] glass-dark px-2 py-1 rounded-full font-mono flex items-center border border-white/10">
-                        <span className="inline-block w-1.5 h-1.5 bg-emerald-400 rounded-full mr-1 pulse-dot relative"></span>
-                        <span className="text-white/90">{MONTH_NAMES[activeMonth].substring(0,3)} {activeYear}</span>
+                    <span className="text-[10px] bg-slate-100 text-slate-700 px-2 py-1 rounded-full font-mono flex items-center border border-slate-300 font-bold shadow-sm">
+                        <span className="inline-block w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1 pulse-dot relative"></span>
+                        <span>{MONTH_NAMES[activeMonth].substring(0,3)} {activeYear}</span>
                     </span>
                     
-                    <div className="text-[10px] bg-white/10 px-2.5 py-1 rounded-full border border-white/20 font-bold flex items-center gap-1 cursor-default">
+                    <div className="text-[10px] bg-blue-600 text-white px-2.5 py-1 rounded-full border border-blue-500 font-bold flex items-center gap-1 shadow-sm cursor-default">
                         👤 {currentUser.username}
                     </div>
                 </div>
@@ -1173,11 +1181,10 @@ function App() {
                     </div> 
                 )} 
 
-                {/* TAB SETTING DI HALAMAN UTAMA DENGAN LOGO LBP */}
+                {/* TAB SETTING DI HALAMAN UTAMA */}
                 {activeTab === 'setting' && (
                     <div className="flex flex-col space-y-4">
                         <div className="glass rounded-3xl p-5 text-center space-y-2">
-                            {/* 2. LOGO DITERAPKAN DI PENGATURAN MENGGANTIKAN GEAR */}
                             <LBPLogo className="w-16 h-auto mx-auto mb-1 drop-shadow-md" />
                             <h3 className="font-display font-bold text-xl">Pengaturan</h3>
                             <p className="text-xs opacity-60">Sesi Login: <strong className="text-blue-400">{currentUser?.username}</strong> ({currentUser?.role})</p>
