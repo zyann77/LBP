@@ -191,6 +191,18 @@
             outline: none;
         }
 
+        /* Input khusus pada Login Card yang Terang */
+        .input-login-light {
+            background: #f8fafc;
+            border: 1.5px solid #cbd5e1;
+            color: #0f172a;
+        }
+        .input-login-light:focus {
+            border-color: #2563eb;
+            background: #ffffff;
+            outline: none;
+        }
+
         /* Modal */
         .modal-backdrop {
             backdrop-filter: blur(12px);
@@ -245,6 +257,20 @@
             border-color: #3b82f6;
         }
 
+        /* Style Logo LBP SVG Asli */
+        .logo-lbp-svg .text-l {
+            font-family: 'Arial Black', Impact, sans-serif;
+            font-size: 300px;
+            font-weight: 900;
+            fill: #FF7300;
+        }
+        .logo-lbp-svg .text-bp {
+            font-family: 'Arial Black', Impact, sans-serif;
+            font-size: 300px;
+            font-weight: 900;
+            fill: #0C3068;
+        }
+
         .num-display {
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
@@ -270,6 +296,21 @@ let supabase = null;
 if (SUPABASE_URL && !SUPABASE_URL.includes("YOUR_SUPABASE_PROJECT_URL")) {
     supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
+
+// COMPONENT LOGO LBP SVG TRANSPARAN TANPA UBAH WARNA
+const LBPLogo = ({ className = "w-full max-w-[200px]" }) => (
+    <div className={`mx-auto flex items-center justify-center ${className}`}>
+        <svg viewBox="0 0 1000 450" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto logo-lbp-svg">
+            <g transform="skewX(-18)">
+                <text className="text-l" x="180" y="360">L</text>
+                <text className="text-bp" x="380" y="360">B</text>
+                <text className="text-bp" x="610" y="360">P</text>
+            </g>
+            <path d="M 265 360 C 480 320, 650 260, 800 220 L 790 200 L 890 190 L 810 260 L 805 240 C 650 285, 480 345, 265 360 Z" fill="none" stroke="#ffffff" strokeWidth="20" strokeLinejoin="round" />
+            <path d="M 265 360 C 480 320, 650 260, 800 220 L 790 200 L 890 190 L 810 260 L 805 240 C 650 285, 480 345, 265 360 Z" fill="#FF7300" />
+        </svg>
+    </div>
+);
 
 // DEFAULT SUPERADMIN UTAMA
 const DEFAULT_SUPERADMIN = { username: 'superadmin', password: 'admin123', role: 'superadmin' };
@@ -742,36 +783,38 @@ function App() {
     }, [transactions, filterTransMonth, filterTransYear, filterType, filterCategory, filterMethod]);
 
     // =========================================================
-    // JIKA BELUM LOGIN: TAMPILKAN HALAMAN KUNCI / FULL LOGIN
+    // JIKA BELUM LOGIN: TAMPILKAN CARD LOGIN BERWARNA PUTIH TERANG
     // =========================================================
     if (!isLoggedIn) {
         return (
             <div className="max-w-md mx-auto h-screen flex flex-col justify-center items-center p-4 relative">
-                <div className="modal-content p-6 rounded-3xl w-full max-w-sm border border-slate-500/20 shadow-2xl space-y-4">
+                {/* CARD LOGIN DIGANTI MENJADI BG-WHITE DAN TEKS DARK */}
+                <div className="bg-white p-6 rounded-3xl w-full max-w-sm shadow-2xl space-y-4 text-slate-900 border border-slate-100">
                     <div className="text-center">
-                        <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-800 flex items-center justify-center text-white text-3xl shadow-lg mb-3">🔐</div>
-                        <h2 className="font-display font-bold text-2xl">LBP Accounting</h2>
-                        <p className="text-xs opacity-60 mt-1">Silakan Login Terlebih Dahulu</p>
+                        {/* LOGO LBP DENGAN LOGO WARNA ASLI & BACKGROUND TRANSPARAN */}
+                        <LBPLogo className="w-full max-w-[200px] mb-2" />
+                        <h2 className="font-display font-bold text-2xl text-slate-800">LBP Accounting</h2>
+                        <p className="text-xs text-slate-500 font-medium mt-1">Silakan Login Terlebih Dahulu</p>
                     </div>
 
-                    {loginError && <p className="text-xs text-rose-500 bg-rose-500/10 p-3 rounded-xl text-center border border-rose-500/20 font-medium">⚠️ {loginError}</p>}
+                    {loginError && <p className="text-xs text-rose-600 bg-rose-50 p-3 rounded-xl text-center border border-rose-200 font-semibold">⚠️ {loginError}</p>}
 
                     <form onSubmit={handleLogin} className="space-y-3">
                         <div>
-                            <label className="text-[10px] font-bold opacity-60 ml-1 uppercase tracking-wider">Username</label>
-                            <input name="username" type="text" placeholder="Masukkan Username..." className="w-full mt-1 text-sm p-3 rounded-xl input-premium" required />
+                            <label className="text-[10px] font-bold text-slate-500 ml-1 uppercase tracking-wider">Username</label>
+                            <input name="username" type="text" placeholder="Masukkan Username..." className="w-full mt-1 text-sm p-3 rounded-xl input-login-light font-medium" required />
                         </div>
                         <div>
-                            <label className="text-[10px] font-bold opacity-60 ml-1 uppercase tracking-wider">Password</label>
-                            <input name="password" type="password" placeholder="Masukkan Password..." className="w-full mt-1 text-sm p-3 rounded-xl input-premium" required />
+                            <label className="text-[10px] font-bold text-slate-500 ml-1 uppercase tracking-wider">Password</label>
+                            <input name="password" type="password" placeholder="Masukkan Password..." className="w-full mt-1 text-sm p-3 rounded-xl input-login-light font-medium" required />
                         </div>
-                        <button type="submit" className="w-full btn-primary text-white p-3 rounded-xl text-xs font-bold shadow-lg mt-2">
+                        <button type="submit" className="w-full btn-primary text-white p-3.5 rounded-xl text-xs font-bold shadow-lg mt-2">
                             🚀 Masuk Ke Aplikasi
                         </button>
                     </form>
 
-                    <div className="pt-4 text-center border-t border-slate-500/10">
-                        <p className="text-[10px] font-mono opacity-50">Created By: <strong className="text-blue-400">Iyann</strong></p>
+                    <div className="pt-4 text-center border-t border-slate-100">
+                        <p className="text-[10px] font-mono text-slate-400">Created By: <strong className="text-blue-600">Iyann</strong></p>
                     </div>
                 </div>
             </div>
