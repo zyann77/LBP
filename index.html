@@ -17,6 +17,15 @@
 
     <!-- SUPABASE JS CLIENT SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- PWA MANIFEST & SERVICE WORKER REGISTER -->
+<link rel="manifest" href="manifest.json">
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js');
+    });
+  }
+</script>
 
     <style>
         :root {
