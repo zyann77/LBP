@@ -28,7 +28,6 @@
         * { font-family: 'Plus Jakarta Sans', sans-serif; }
         h1, h2, h3, .font-display { font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.02em; }
         
-        /* Tema Terang / Normal */
         body.light-theme {
             background: 
                 radial-gradient(circle at 20% 10%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
@@ -38,7 +37,6 @@
             min-height: 100vh;
         }
 
-        /* Tema Malam / Night Mode */
         body.dark-theme {
             background: 
                 radial-gradient(circle at 20% 10%, rgba(30, 58, 138, 0.25) 0%, transparent 50%),
@@ -48,7 +46,6 @@
             min-height: 100vh;
         }
 
-        /* HEADER DIBUAT TERANG AGAR LOGO DENGAN ELEMEN BIRU TUA BISA TERLIHAT DENGAN JELAS */
         .header-light {
             background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(20px);
@@ -57,7 +54,6 @@
             color: #0f172a;
         }
 
-        /* Marquee */
         .marquee-container {
             display: flex;
             overflow: hidden;
@@ -85,7 +81,6 @@
             to { background-position: 200% center; }
         }
 
-        /* Glassmorphism Dynamic */
         .light-theme .glass {
             background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(20px) saturate(180%);
@@ -105,7 +100,6 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Premium Card Dynamic */
         .light-theme .premium-card {
             background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
             border: 1px solid rgba(15, 23, 42, 0.06);
@@ -117,7 +111,6 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
         }
 
-        /* Hero Gradient */
         .hero-gradient {
             background: 
                 radial-gradient(circle at 0% 0%, rgba(251, 191, 36, 0.15) 0%, transparent 50%),
@@ -127,7 +120,6 @@
             overflow: hidden;
         }
 
-        /* Buttons */
         .btn-primary {
             background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
             box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
@@ -150,7 +142,6 @@
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         }
 
-        /* Progress bar */
         .progress-track {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -160,7 +151,6 @@
             box-shadow: 0 0 12px rgba(16, 185, 129, 0.6);
         }
 
-        /* Bottom nav */
         .light-theme .bottom-nav {
             background: rgba(255, 255, 255, 0.88);
             backdrop-filter: blur(24px);
@@ -184,7 +174,6 @@
             border-radius: 0 0 4px 4px;
         }
 
-        /* Inputs */
         .light-theme .input-premium {
             background: #ffffff;
             border: 1.5px solid #e2e8f0;
@@ -211,7 +200,6 @@
             outline: none;
         }
 
-        /* Modal */
         .modal-backdrop {
             backdrop-filter: blur(12px);
             background: rgba(10, 14, 39, 0.85);
@@ -225,7 +213,6 @@
             color: #f8fafc;
         }
 
-        /* Citizen & Transaction row */
         .light-theme .citizen-row, .light-theme .trans-row {
             background: #ffffff;
             border: 1px solid rgba(15, 23, 42, 0.05);
@@ -265,7 +252,6 @@
             border-color: #3b82f6;
         }
 
-        /* Style Logo LBP SVG Asli */
         .logo-lbp-svg .text-l {
             font-family: 'Arial Black', Impact, sans-serif;
             font-size: 300px;
@@ -294,16 +280,15 @@
 <script type="text/babel"> 
 const { useState, useEffect, useMemo } = React;
 
-// CONFIG SUPABASE
-const SUPABASE_URL = "https://YOUR_SUPABASE_PROJECT_URL.supabase.co"; 
-const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY"; 
+// CONFIG SUPABASE LIVE KAMU
+const SUPABASE_URL = "https://pchpwcbqlsnysickfurd.supabase.co"; 
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjaHB3Y2JxbHNueXNpY2tmdXJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE0Mjg1NTUsImV4cCI6MjEwNzAwNDU1NX0.XtjCZlvlSBZBR_AnevHoiZ9ofMJEJjcoLRh1U87FlFU"; 
 
 let supabase = null;
-if (SUPABASE_URL && !SUPABASE_URL.includes("YOUR_SUPABASE_PROJECT_URL")) {
+if (window.supabase && SUPABASE_URL) {
     supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
 
-// COMPONENT LOGO LBP SVG REUSABLE (DENGAN VIEWBOX SIMETRIS UNTUK DITENGAHKAN PERFECT)
 const LBPLogo = ({ className = "w-full max-w-[200px]" }) => (
     <div className={`flex items-center justify-center ${className}`}>
         <svg viewBox="100 130 820 280" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto logo-lbp-svg">
@@ -318,7 +303,6 @@ const LBPLogo = ({ className = "w-full max-w-[200px]" }) => (
     </div>
 );
 
-// DEFAULT SUPERADMIN UTAMA
 const DEFAULT_SUPERADMIN = { username: 'superadmin', password: 'admin123', role: 'superadmin' };
 
 const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwBw1oqQylhRH-YEL5zdlvLizlw_H_YeehjoJwxhmmGf-eW12Hf7RewrNxqMqaEh3w92w/exec";
@@ -327,7 +311,6 @@ const MONTH_NAMES = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Ju
 const AVAILABLE_YEARS = [2024, 2025, 2026, 2027, 2028, 2029, 2030];
 
 function App() { 
-    // State Night Mode Default True
     const [isNightMode, setIsNightMode] = useState(() => {
         const saved = localStorage.getItem('nightModeLBP');
         return saved !== null ? saved === 'true' : true;
@@ -344,7 +327,6 @@ function App() {
         localStorage.setItem('nightModeLBP', isNightMode);
     }, [isNightMode]);
 
-    // State Akun Sesi
     const [currentUser, setCurrentUser] = useState(() => {
         const saved = localStorage.getItem('currentUserLBP');
         return saved ? JSON.parse(saved) : null;
@@ -356,7 +338,6 @@ function App() {
 
     const [loginError, setLoginError] = useState('');
 
-    // State Kategori Manual/Dinamis
     const [categories, setCategories] = useState(() => {
         const saved = localStorage.getItem('categoriesLBP');
         return saved ? JSON.parse(saved) : [
@@ -366,14 +347,12 @@ function App() {
         ];
     });
 
-    // State User buatan Superadmin
     const [appUsers, setAppUsers] = useState(() => {
         const saved = localStorage.getItem('appUsersLBP');
         return saved ? JSON.parse(saved) : [];
     });
 
-    // Sub-modal Navigasi Setting
-    const [settingSubView, setSettingSubView] = useState('main'); // 'main', 'users', 'categories'
+    const [settingSubView, setSettingSubView] = useState('main');
 
     const [activeTab, setActiveTab] = useState('home'); 
     const [activeMonth, setActiveMonth] = useState(new Date().getMonth()); 
@@ -402,7 +381,6 @@ function App() {
     const [showTransModal, setShowTransModal] = useState(false); 
     const [editTransData, setEditTransData] = useState(null); 
     
-    // State Modal Universal/Kustom
     const [customModal, setCustomModal] = useState({ 
         isOpen: false, 
         title: '', 
@@ -421,6 +399,65 @@ function App() {
         const mm = String(today.getMonth() + 1).padStart(2, '0');
         const dd = String(today.getDate()).padStart(2, '0');
         return `${yyyy}-${mm}-${dd}`;
+    }, []);
+
+    // SINKRONISASI REAL-TIME SUPABASE SAAT KODE PERTAMA DIJALANKAN
+    useEffect(() => {
+        if (!supabase) return;
+
+        const fetchDataFromSupabase = async () => {
+            try {
+                // Members
+                const { data: dbMembers } = await supabase.from('members').select('*');
+                if (dbMembers && dbMembers.length > 0) {
+                    setMembers(dbMembers.map(m => ({
+                        id: Number(m.id),
+                        name: m.name,
+                        createdBy: m.created_by
+                    })));
+                }
+
+                // Categories
+                const { data: dbCategories } = await supabase.from('categories').select('*');
+                if (dbCategories && dbCategories.length > 0) {
+                    setCategories(dbCategories);
+                }
+
+                // App Users
+                const { data: dbUsers } = await supabase.from('app_users').select('*');
+                if (dbUsers && dbUsers.length > 0) {
+                    setAppUsers(dbUsers.map(u => ({
+                        id: Number(u.id),
+                        username: u.username,
+                        password: u.password,
+                        role: u.role
+                    })));
+                }
+
+                // Transactions
+                const { data: dbTrans } = await supabase.from('transactions').select('*').order('date', { ascending: false });
+                if (dbTrans && dbTrans.length > 0) {
+                    setTransactions(dbTrans.map(t => ({
+                        id: Number(t.id),
+                        ket: t.ket,
+                        nominal: Number(t.nominal),
+                        category: t.category,
+                        method: t.method,
+                        type: t.type,
+                        date: t.date,
+                        memberId: t.member_id ? Number(t.member_id) : null,
+                        isDues: t.is_dues,
+                        duesMonth: t.dues_month,
+                        duesYear: t.dues_year,
+                        createdBy: t.created_by
+                    })));
+                }
+            } catch (err) {
+                console.error("Gagal sinkron data Supabase:", err);
+            }
+        };
+
+        fetchDataFromSupabase();
     }, []);
 
     useEffect(() => { localStorage.setItem('appUsersLBP', JSON.stringify(appUsers)); }, [appUsers]);
@@ -462,14 +499,12 @@ function App() {
         setActiveTab('home');
     };
 
-    // FUNGSI KLIK KATEGORI DI BERANDA UNTUK BUKA HISTORY KEUANGAN
     const handleCategoryClick = (catId) => {
         setFilterCategory(catId);
         setActiveTab('keuangan');
     };
 
-    // MANAGEMENT USER LOGIN
-    const handleAddUser = (e) => {
+    const handleAddUser = async (e) => {
         e.preventDefault();
         const u = e.target.new_username.value.trim();
         const p = e.target.new_password.value.trim();
@@ -488,40 +523,59 @@ function App() {
             return;
         }
 
-        const newUser = { id: Date.now(), username: u, password: p, role: role };
+        const newId = Date.now();
+        const newUser = { id: newId, username: u, password: p, role: role };
+        
         setAppUsers([...appUsers, newUser]);
+        if (supabase) {
+            await supabase.from('app_users').insert([{ id: newId, username: u, password: p, role: role }]);
+        }
         e.target.reset();
     };
 
-    const handleDeleteUser = (id) => {
+    const handleDeleteUser = async (id) => {
         setCustomModal({
             isOpen: true,
             title: 'Hapus User',
             message: 'Yakin ingin menghapus akun login ini?',
             icon: '⚠️',
             type: 'confirm',
-            onConfirm: () => setAppUsers(appUsers.filter(usr => usr.id !== id))
+            onConfirm: async () => {
+                setAppUsers(appUsers.filter(usr => usr.id !== id));
+                if (supabase) {
+                    await supabase.from('app_users').delete().eq('id', id);
+                }
+            }
         });
     };
 
-    // MANAGEMENT KATEGORI
-    const handleAddCategory = (e) => {
+    const handleAddCategory = async (e) => {
         e.preventDefault();
         const catName = e.target.cat_name.value.trim();
         if (!catName) return;
-        const newCat = { id: 'cat_' + Date.now(), name: catName };
+        const newId = 'cat_' + Date.now();
+        const newCat = { id: newId, name: catName };
+
         setCategories([...categories, newCat]);
+        if (supabase) {
+            await supabase.from('categories').insert([{ id: newId, name: catName }]);
+        }
         e.target.reset();
     };
 
-    const handleDeleteCategory = (catId) => {
+    const handleDeleteCategory = async (catId) => {
         setCustomModal({
             isOpen: true,
             title: 'Hapus Kategori',
             message: 'Hapus kategori ini dari daftar?',
             icon: '⚠️',
             type: 'confirm',
-            onConfirm: () => setCategories(categories.filter(c => c.id !== catId))
+            onConfirm: async () => {
+                setCategories(categories.filter(c => c.id !== catId));
+                if (supabase) {
+                    await supabase.from('categories').delete().eq('id', catId);
+                }
+            }
         });
     };
 
@@ -575,8 +629,7 @@ function App() {
         return { total, paid, percent };
     }, [members, transactions, activeMonth, activeYear]);
 
-    // SUBMIT BAYAR ANGGOTA
-    const handlePayDuesSubmit = (e) => { 
+    const handlePayDuesSubmit = async (e) => { 
         e.preventDefault();
         if (!isSuperAdmin) return;
         
@@ -598,6 +651,7 @@ function App() {
         }
 
         const newId = Date.now();
+        const nowIso = new Date().toISOString();
         const newT = { 
             id: newId, 
             ket: `${m.name} - ${ketVal}`, 
@@ -605,7 +659,7 @@ function App() {
             category: catVal, 
             method: methodVal, 
             type: 'masuk', 
-            date: new Date().toISOString(), 
+            date: nowIso, 
             memberId: m.id, 
             isDues: true,
             duesMonth: activeMonth, 
@@ -614,18 +668,34 @@ function App() {
         }; 
         
         setTransactions([newT, ...transactions]);
+        if (supabase) {
+            await supabase.from('transactions').insert([{
+                id: newId,
+                ket: `${m.name} - ${ketVal}`,
+                nominal: nominalVal,
+                category: catVal,
+                method: methodVal,
+                type: 'masuk',
+                date: nowIso,
+                member_id: m.id,
+                is_dues: true,
+                dues_month: activeMonth,
+                dues_year: activeYear,
+                created_by: currentUser?.username
+            }]);
+        }
+
         setShowPayModal({ isOpen: false, member: null }); 
     };
 
-    // SIMPAN TRANSAKSI BARU / EDIT
-    const handleSaveTransaction = (e) => { 
+    const handleSaveTransaction = async (e) => { 
         e.preventDefault(); 
         if (!isSuperAdmin) return;
         const form = e.target; 
         const [y, m, d] = form.date.value.split('-');
         
         const now = new Date();
-        const transactionDate = new Date(y, m - 1, d, now.getHours(), now.getMinutes(), now.getSeconds());
+        const transactionDate = new Date(y, m - 1, d, now.getHours(), now.getMinutes(), now.getSeconds()).toISOString();
 
         const newTData = { 
             nominal: parseInt(form.nom.value),
@@ -633,14 +703,38 @@ function App() {
             method: form.method.value, 
             type: form.type.value, 
             category: form.cat.value, 
-            date: transactionDate.toISOString(), 
+            date: transactionDate, 
         }; 
 
         if (editTransData) {
             setTransactions(transactions.map(t => t.id === editTransData.id ? { ...t, ...newTData } : t));
+            if (supabase) {
+                await supabase.from('transactions').update({
+                    nominal: parseInt(form.nom.value),
+                    ket: form.ket.value,
+                    method: form.method.value,
+                    type: form.type.value,
+                    category: form.cat.value,
+                    date: transactionDate
+                }).eq('id', editTransData.id);
+            }
         } else {
             const newId = Date.now();
-            setTransactions([{ id: newId, isDues: false, createdBy: currentUser?.username, ...newTData }, ...transactions]);
+            const createdObj = { id: newId, isDues: false, createdBy: currentUser?.username, ...newTData };
+            setTransactions([createdObj, ...transactions]);
+            if (supabase) {
+                await supabase.from('transactions').insert([{
+                    id: newId,
+                    ket: form.ket.value,
+                    nominal: parseInt(form.nom.value),
+                    category: form.cat.value,
+                    method: form.method.value,
+                    type: form.type.value,
+                    date: transactionDate,
+                    is_dues: false,
+                    created_by: currentUser?.username
+                }]);
+            }
         }
         
         setShowTransModal(false); 
@@ -656,9 +750,12 @@ function App() {
             icon: '✎',
             type: 'prompt',
             defaultValue: member.name,
-            onConfirm: (val) => {
+            onConfirm: async (val) => {
                 if (val && val.trim()) {
                     setMembers(members.map(m => m.id === member.id ? { ...m, name: val.trim() } : m));
+                    if (supabase) {
+                        await supabase.from('members').update({ name: val.trim() }).eq('id', member.id);
+                    }
                 }
             }
         });
@@ -672,7 +769,12 @@ function App() {
             message: 'Apakah Anda yakin ingin menghapus Anggota ini? Data tidak dapat dikembalikan.',
             icon: '⚠️',
             type: 'confirm',
-            onConfirm: () => setMembers(members.filter(m => m.id !== id))
+            onConfirm: async () => {
+                setMembers(members.filter(m => m.id !== id));
+                if (supabase) {
+                    await supabase.from('members').delete().eq('id', id);
+                }
+            }
         });
     };
 
@@ -684,7 +786,12 @@ function App() {
             message: 'Apakah Anda yakin ingin menghapus data transaksi ini?',
             icon: '⚠️',
             type: 'confirm',
-            onConfirm: () => setTransactions(transactions.filter(t => t.id !== id))
+            onConfirm: async () => {
+                setTransactions(transactions.filter(t => t.id !== id));
+                if (supabase) {
+                    await supabase.from('transactions').delete().eq('id', id);
+                }
+            }
         });
     };
 
@@ -697,14 +804,22 @@ function App() {
             icon: '➕',
             type: 'prompt',
             defaultValue: '',
-            onConfirm: (val) => {
+            onConfirm: async (val) => {
                 if (val && val.trim()) {
                     const newId = Date.now();
-                    setMembers([...members, {
+                    const newMember = {
                         id: newId,
                         name: val.trim(),
                         createdBy: currentUser?.username
-                    }]);
+                    };
+                    setMembers([...members, newMember]);
+                    if (supabase) {
+                        await supabase.from('members').insert([{
+                            id: newId,
+                            name: val.trim(),
+                            created_by: currentUser?.username
+                        }]);
+                    }
                 }
             }
         });
@@ -788,7 +903,6 @@ function App() {
         });
     }, [transactions, filterTransMonth, filterTransYear, filterType, filterCategory, filterMethod]);
 
-    // HALAMAN LOGIN TERKUNCI (HANYA LOGO DI TENGAH SIMETRIS TANDA TEXT)
     if (!isLoggedIn) {
         return (
             <div className="max-w-md mx-auto h-screen flex flex-col justify-center items-center p-4 relative">
@@ -821,11 +935,9 @@ function App() {
         );
     }
 
-    // APLIKASI UTAMA
     return ( 
         <div className="max-w-md mx-auto h-screen flex flex-col relative"> 
 
-            {/* HEADER DENGAN BACKGROUND KONTRAST TERANG AGAR LOGO KELIHATAN JELAS */}
             <header className="header-light px-3 py-2 flex-none flex justify-between items-center sticky top-0 z-50 pt-safe"> 
                 <div className="flex items-center gap-2 flex-1 min-w-0">
                     <LBPLogo className="w-12 h-auto flex-none drop-shadow-sm" />
@@ -859,7 +971,6 @@ function App() {
             <main className="flex-1 p-3 pb-20 overflow-y-auto"> 
                 {activeTab === 'home' && ( 
                     <div className="flex flex-col space-y-3"> 
-                        {/* Month/Year Selector */}
                         <div className="glass rounded-2xl p-3">
                             <div className="grid grid-cols-2 gap-2">
                                 <div className="flex flex-col gap-1">
@@ -881,7 +992,6 @@ function App() {
                             </div>
                         </div>
 
-                        {/* Hero Card */}
                         <div className="hero-gradient rounded-3xl p-5 text-white shadow-2xl space-y-4 relative overflow-hidden"> 
                             <div className="relative z-10">
                                 <div className="flex items-center justify-between mb-1">
@@ -936,7 +1046,6 @@ function App() {
                             </div>
                         </div> 
                         
-                        {/* Monthly Stats */}
                         <div className="grid grid-cols-2 gap-2"> 
                             <div className="premium-card p-3 rounded-2xl stat-card text-emerald-500">
                                 <div className="flex items-center gap-1.5 mb-1">
@@ -956,7 +1065,6 @@ function App() {
                             </div> 
                         </div> 
                         
-                        {/* Categories */}
                         <div>
                             <div className="grid grid-cols-1 gap-2"> 
                                 {categories.map((cat) => ( 
@@ -987,7 +1095,6 @@ function App() {
 
                 {activeTab === 'anggota' && ( 
                     <div className="flex flex-col space-y-3"> 
-                        {/* Month Navigator */}
                         <div className="glass rounded-2xl p-2 flex items-center gap-2"> 
                             <button onClick={() => { setActiveMonth(activeMonth === 0 ? 11 : activeMonth - 1); if(activeMonth === 0) setActiveYear(activeYear - 1); }} className="w-9 h-9 rounded-xl text-sm font-bold flex items-center justify-center transition border border-slate-500/20">‹</button> 
                             <div className="font-bold text-sm flex-1 text-center font-display">
@@ -1002,7 +1109,6 @@ function App() {
                             </button> 
                         )}
                         
-                        {/* Search & Filter */}
                         <div className="glass rounded-2xl p-2 flex gap-2">
                             <div className="flex-1 relative">
                                 <span className="absolute left-3 top-1/2 -translate-y-1/2 opacity-40 text-xs">🔍</span>
@@ -1091,7 +1197,6 @@ function App() {
                             </div>
                         )}
 
-                        {/* Filters */}
                         <div className="glass rounded-2xl p-3 space-y-2">
                             <div className="grid grid-cols-2 gap-2">
                                 <select value={filterTransMonth} onChange={(e) => setFilterTransMonth(e.target.value)} className="text-[10px] p-2 rounded-xl input-premium truncate font-medium">
@@ -1121,7 +1226,6 @@ function App() {
                             </div>
                         </div>
 
-                        {/* Summary */}
                         <div className="hero-gradient rounded-2xl p-3 shadow-lg flex justify-between items-center text-white relative overflow-hidden">
                             <div className="relative z-10">
                                 <span className="text-[10px] text-blue-200 uppercase tracking-wider font-bold">📊 {filteredTransactions.length} Transaksi</span>
@@ -1138,7 +1242,6 @@ function App() {
                             </div>
                         </div>
 
-                        {/* Transactions List */}
                         <div className="space-y-2">
                             {filteredTransactions.map(t => ( 
                                 <div key={t.id} className="trans-row p-3 rounded-2xl flex justify-between items-center"> 
@@ -1179,7 +1282,6 @@ function App() {
                     </div> 
                 )} 
 
-                {/* TAB SETTING DI HALAMAN UTAMA */}
                 {activeTab === 'setting' && (
                     <div className="flex flex-col space-y-4">
                         <div className="glass rounded-3xl p-5 text-center space-y-2">
@@ -1189,7 +1291,6 @@ function App() {
                         </div>
 
                         <div className="space-y-2">
-                            {/* MENU SUPERADMIN */}
                             {isSuperAdmin && (
                                 <>
                                     <button onClick={() => setSettingSubView('users')} className="w-full p-4 rounded-2xl glass hover:bg-slate-500/10 text-xs font-bold flex items-center justify-between transition">
@@ -1203,14 +1304,12 @@ function App() {
                                 </>
                             )}
 
-                            {/* MENU UNTUK SEMUA USER (BASIC & SUPERADMIN) */}
                             <button onClick={() => setShowLogoutModal(true)} className="w-full p-4 rounded-2xl glass hover:bg-rose-500/10 text-rose-500 text-xs font-bold flex items-center justify-between transition">
                                 <span className="flex items-center gap-3"><span className="text-lg">🚪</span> Logout Akun</span>
                                 <span>→</span>
                             </button>
                         </div>
 
-                        {/* SUB-VIEW MODAL: KELOLA AKUN */}
                         {settingSubView === 'users' && isSuperAdmin && (
                             <div className="glass rounded-3xl p-5 space-y-4">
                                 <div className="flex justify-between items-center border-b border-slate-500/20 pb-3">
@@ -1253,7 +1352,6 @@ function App() {
                             </div>
                         )}
 
-                        {/* SUB-VIEW MODAL: KELOLA KATEGORI */}
                         {settingSubView === 'categories' && isSuperAdmin && (
                             <div className="glass rounded-3xl p-5 space-y-4">
                                 <div className="flex justify-between items-center border-b border-slate-500/20 pb-3">
@@ -1281,7 +1379,6 @@ function App() {
                             </div>
                         )}
 
-                        {/* FOOTER PEMBUAT APLIKASI DI POSISI STANDAR UMUM */}
                         <div className="pt-6 pb-2 text-center space-y-2 border-t border-slate-500/10 mt-auto">
                             <p className="text-[11px] font-mono opacity-60">Created By: <strong className="text-blue-400">Iyann</strong></p>
                             <a 
@@ -1296,7 +1393,6 @@ function App() {
                 )}
             </main>
 
-            {/* BOTTOM NAVIGATION */}
             <nav className="flex-none bottom-nav flex justify-around items-center p-2 pb-safe"> 
                 <button onClick={() => setActiveTab('home')} className={`nav-item flex flex-col items-center gap-1 w-16 py-2 rounded-xl ${activeTab === 'home' ? 'active' : ''}`}>
                     <svg className={`nav-icon w-5 h-5 ${activeTab === 'home' ? 'text-blue-500' : 'opacity-40'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={activeTab === 'home' ? 2.5 : 2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
@@ -1319,7 +1415,6 @@ function App() {
                 </button> 
             </nav> 
 
-            {/* PAYMENT MODAL */}
             {showPayModal.isOpen && isSuperAdmin && (() => {
                 const m = showPayModal.member;
                 return (
@@ -1366,7 +1461,6 @@ function App() {
                 );
             })()}
 
-            {/* TRANSACTION MODAL */}
             {showTransModal && isSuperAdmin && ( 
                 <div className="fixed inset-0 modal-backdrop z-[60] flex items-center justify-center p-4"> 
                     <form key={editTransData ? editTransData.id : 'new'} onSubmit={handleSaveTransaction} className="modal-content p-6 rounded-3xl w-full max-w-sm space-y-3"> 
@@ -1404,7 +1498,6 @@ function App() {
                 </div> 
             )}
 
-            {/* MODAL SERAGAM */}
             {customModal.isOpen && (
                 <div className="fixed inset-0 modal-backdrop z-[85] flex items-center justify-center p-4"> 
                     <div className="modal-content p-6 rounded-3xl w-full max-w-xs text-center space-y-3"> 
@@ -1450,7 +1543,6 @@ function App() {
                 </div> 
             )}
 
-            {/* LOGOUT CONFIRMATION MODAL */}
             {showLogoutModal && (
                 <div className="fixed inset-0 modal-backdrop z-[80] flex items-center justify-center p-4"> 
                     <div className="modal-content p-6 rounded-3xl w-full max-w-xs text-center"> 
